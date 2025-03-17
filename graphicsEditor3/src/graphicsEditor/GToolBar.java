@@ -11,6 +11,8 @@ public class GToolBar extends JToolBar {
 	private JRadioButton rectangleButton;
 	
 	public GToolBar() {
+		super();
+		
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
 		this.rectangleButton = new JRadioButton("rectangle");

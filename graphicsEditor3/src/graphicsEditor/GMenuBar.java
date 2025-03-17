@@ -8,6 +8,8 @@ public class GMenuBar extends JMenuBar {
 	private GFileMenu fileMenu;
 	
 	public GMenuBar() {
+		super();
+		
 		this.fileMenu = new GFileMenu();
 		this.add(this.fileMenu);		
 	}
