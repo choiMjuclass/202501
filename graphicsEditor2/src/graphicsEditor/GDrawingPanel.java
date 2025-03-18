@@ -10,23 +10,26 @@ public class GDrawingPanel extends JPanel {
 
 	public GDrawingPanel() {
 		super();
+		System.out.println("GDrawingPanel::GDrawingPanel");
+	}
+
+	public void initialize() {
+		System.out.println("GDrawingPanel::initialize");
+	}
+	
+	public void paint(Graphics graphics) {
+		System.out.println("GDrawingPanel::paint");
+		super.paint(graphics);
+	}
+	
+	protected void paintComponent(Graphics graphics) {
+		System.out.println("GDrawingPanel::paintComponent");
+		super.paintComponent(graphics);		
+		this.draw(graphics);
 	}
 	
 	public void draw(Graphics graphics) {
 		graphics.setColor(Color.RED);
-		graphics.drawRect(10, 10, 50, 50);
-	}
-
-	public void initialize() {
-//		this.draw(this.getGraphics());
-	}
-	
-	public void paint(Graphics graphics) {
-		super.paint(graphics);
-	
-		graphics.setColor(Color.BLACK);
-		graphics.fillRect(0, 0, this.getWidth(), this.getHeight());
-		
-		this.draw(this.getGraphics());
+		graphics.drawRect(100, 100, 50, 50);
 	}
 }

@@ -15,8 +15,6 @@ public class GMenuBar extends JMenuBar {
 	}
 
 	public void initialize() {
-		// TODO Auto-generated method stub
-		
+		System.out.println("GMenuBar::initialize");
 	}
-
 }

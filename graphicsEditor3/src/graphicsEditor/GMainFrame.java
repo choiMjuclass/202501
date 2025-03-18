@@ -1,8 +1,6 @@
 package graphicsEditor;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
-
 import javax.swing.JFrame;
 
 public class GMainFrame extends JFrame {
@@ -24,15 +22,14 @@ public class GMainFrame extends JFrame {
 		this.menuBar = new GMenuBar();
 		this.setJMenuBar(this.menuBar);
 
-		Container contenetPane = this.getContentPane();		
-		contenetPane.setLayout(new BorderLayout());
-
+		this.setLayout(new BorderLayout());
 		
 		this.toolBar = new GToolBar();
-		contenetPane.add(this.toolBar, BorderLayout.NORTH);
+		this.add(this.toolBar, BorderLayout.NORTH);
 		
 		this.drawingPanel = new GDrawingPanel();
-		contenetPane.add(this.drawingPanel, BorderLayout.SOUTH);		
+//		this.add(this.drawingPanel, BorderLayout.SOUTH);
+		this.setContentPane(drawingPanel);
 	}
 
 	public void initialize() {		
@@ -40,5 +37,4 @@ public class GMainFrame extends JFrame {
 		this.toolBar.initialize();
 		this.drawingPanel.initialize();
 	}
-
 }
