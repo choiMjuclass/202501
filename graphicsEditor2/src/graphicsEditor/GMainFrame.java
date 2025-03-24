@@ -17,16 +17,18 @@ public class GMainFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// components
-		this.setLayout(new BorderLayout());
-
 		this.menuBar = new GMenuBar();
 		this.setJMenuBar(menuBar);
+		
+		this.setLayout(new BorderLayout());
 		
 		this.toolBar = new GToolBar();
 		this.add(toolBar, BorderLayout.NORTH);
 		
 		this.drawingPanel = new GDrawingPanel();
-		this.add(drawingPanel, BorderLayout.SOUTH);		
+		this.add(drawingPanel, BorderLayout.CENTER);
+		
+		this.setVisible(true);
 	}
 
 	public void initialize() {
