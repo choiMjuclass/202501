@@ -7,16 +7,18 @@ import javax.swing.JPanel;
 public class GDrawingPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
-	public GDrawingPanel() {
-		
-	}
-	
-	public void draw() {
-		Graphics graphics = this.getGraphics();
-		graphics.drawRect(10, 10, 50, 50);
+	public GDrawingPanel() {		
 	}
 
 	public void initialize() {
-		this.draw();		
+	}
+	
+	protected void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
+		this.draw(graphics);
+	}	
+	
+	public void draw(Graphics graphics) {
+		graphics.drawRect(10, 10, 50, 50);
 	}
 }

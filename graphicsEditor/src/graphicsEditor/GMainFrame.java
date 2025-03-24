@@ -18,10 +18,10 @@ public class GMainFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// components
-		this.setLayout(new BorderLayout());
-
 		this.menuBar = new GMenuBar();
-		this.setJMenuBar(menuBar);		
+		this.setJMenuBar(menuBar);
+		
+		this.setLayout(new BorderLayout());
 		this.toolBar = new GToolBar();
 		this.add(toolBar, BorderLayout.NORTH);		
 		this.drawingPanel = new GDrawingPanel();
@@ -29,6 +29,9 @@ public class GMainFrame extends JFrame {
 	}
 
 	public void initialize() {
+		// associated attributes
+		this.setVisible(true);
+
 		this.menuBar.initialize();
 		this.toolBar.initialize();
 		this.drawingPanel.initialize();
