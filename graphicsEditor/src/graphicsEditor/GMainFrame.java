@@ -1,6 +1,6 @@
 package graphicsEditor;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
@@ -18,14 +18,14 @@ public class GMainFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// components
-		this.setLayout(new FlowLayout());
+		this.setLayout(new BorderLayout());
 
 		this.menuBar = new GMenuBar();
 		this.setJMenuBar(menuBar);		
 		this.toolBar = new GToolBar();
-		this.add(toolBar);		
+		this.add(toolBar, BorderLayout.NORTH);		
 		this.drawingPanel = new GDrawingPanel();
-		this.add(drawingPanel);		
+		this.add(drawingPanel, BorderLayout.CENTER);		
 	}
 
 	public void initialize() {
