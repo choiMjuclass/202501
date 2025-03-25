@@ -29,12 +29,19 @@ public class GMainFrame extends JFrame {
 		LayoutManager layoutManager = new BorderLayout();
 		this.setLayout(layoutManager);		
 		
+		this.setLayout(new BorderLayout());
+		
 		this.toolBar = new GToolBar();
 		this.add(this.toolBar, BorderLayout.NORTH);		
 		
 		this.drawingPanel = new GDrawingPanel();
+<<<<<<< HEAD
 		this.add(this.drawingPanel, BorderLayout.CENTER);
 
+=======
+		this.add(drawingPanel, BorderLayout.CENTER);
+		
+>>>>>>> branch 'master' of https://github.com/choiMjuclass/202501.git
 		this.setVisible(true);
 	}
 
