@@ -5,11 +5,14 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 public class GMainFrame extends JFrame {
+	// attributes
 	private static final long serialVersionUID = 1L;
-
+	// components
 	private GMenuBar menuBar;
 	private GToolBar toolBar;
 	private GDrawingPanel drawingPanel;
+	// associations
+	// ...
 	
 	public GMainFrame() {
 		// attributes
