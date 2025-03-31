@@ -23,12 +23,11 @@ public class GDrawingPanel extends JPanel {
 	
 	public void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		this.draw(graphics);
 	}	
 	
-	public void draw(Graphics graphics) {
-		graphics.setColor(Color.RED);
-		graphics.drawRect(10, 10, 50, 50);
+	private void draw(int x, int y) {
+		Graphics graphics = this.getGraphics();
+		graphics.drawRect(x, y, 50, 50);
 	}
 	
 	private class MouseEventHandler implements MouseMotionListener, MouseListener {
@@ -41,6 +40,7 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			System.out.println("mousePressed");
+			draw(e.getX(), e.getY());
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
