@@ -31,6 +31,8 @@ public class GDrawingPanel extends JPanel {
 		Graphics graphics = this.getGraphics();
 		graphics.drawRect(x, y, 50, 50);
 	}
+	
+	
 	public abstract class Transformer {
 		
 		protected int x0, y0, x1, y1;
