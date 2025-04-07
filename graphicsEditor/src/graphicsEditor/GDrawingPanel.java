@@ -30,37 +30,7 @@ public class GDrawingPanel extends JPanel {
 		graphics.drawRect(x, y, w, h);
 	}
 	
-	public abstract class Transformer {
-		
-		protected int x0, y0, x1, y1;
-		
-		public abstract void start(int x, int y, Graphics graphics);
-		public abstract void transform(int x, int y, Graphics graphics);
-		public abstract void finish(int x, int y, Graphics graphics);
-	}
-	
-	public class Drawer extends Transformer {
 
-		@Override
-		public void start(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void transform(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void finish(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
 	private class MouseHandler implements MouseListener, MouseMotionListener {
 
 		@Override
