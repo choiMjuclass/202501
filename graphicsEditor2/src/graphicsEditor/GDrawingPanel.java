@@ -1,104 +1,80 @@
 package graphicsEditor;
 
-import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Vector;
 
 import javax.swing.JPanel;
-
-import graphicsEditor.GDrawingPanel.Transformer;
 
 public class GDrawingPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 
+	private Vector<GRectangle> rectangles;
+	
 	public GDrawingPanel() {
-		MouseEventHandler mouseEventHandler = new MouseEventHandler();
-		this.addMouseListener(mouseEventHandler);
-		this.addMouseMotionListener(mouseEventHandler);
+		MouseHandler mouseHandler = new MouseHandler();
+		this.addMouseListener(mouseHandler);
+		this.addMouseMotionListener(mouseHandler);
+		
+		this.rectangles = new Vector<GRectangle>();
 	}
-
 
 	public void initialize() {
 	}
 	
-	public void paintComponent(Graphics graphics) {
+	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
+		for (GRectangle rectangle: rectangles) {
+			rectangle.draw((Graphics2D)graphics);
+		}
 	}	
 	
-	private void draw(int x, int y) {
-		Graphics graphics = this.getGraphics();
-		graphics.drawRect(x, y, 50, 50);
-	}
-	
-	
-	public abstract class Transformer {
-		
-		protected int x0, y0, x1, y1;
-		
-		public abstract void start(int x, int y, Graphics graphics);
-		public abstract void transform(int x, int y, Graphics graphics);
-		public abstract void finish(int x, int y, Graphics graphics);
-	}
-	
-	public class Drawer extends Transformer {
 
-		@Override
-		public void start(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void transform(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void finish(int x, int y, Graphics graphics) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	private class MouseEventHandler implements MouseMotionListener, MouseListener {
+	private class MouseHandler implements MouseListener, MouseMotionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			System.out.println("mouseClicked");
 		}
 
+		private GTransformer transformer;
+		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			System.out.println("mousePressed");
-			draw(e.getX(), e.getY());
+			transformer = new GTransformer();
+			Graphics2D graphics2D = (Graphics2D)getGraphics();
+			graphics2D.setXORMode(getBackground());
+			transformer.start(graphics2D, e.getX(), e.getY());			
+		}
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			Graphics2D graphics2D = (Graphics2D)getGraphics();
+			graphics2D.setXORMode(getBackground());
+			transformer.drag(graphics2D, e.getX(), e.getY());			
+
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			Graphics2D graphics2D = (Graphics2D)getGraphics();
+			graphics2D.setXORMode(getBackground());
+			GRectangle rectangle = transformer.finish(graphics2D, e.getX(), e.getY());			
+			rectangles.add(rectangle);
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			System.out.println("mouseMoved");
-		}
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			System.out.println("mouseDragged");
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			System.out.println("mouseReleased");
-		}
-
+		}		
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			System.out.println("mouseEntered");
 		}
-
 		@Override
 		public void mouseExited(MouseEvent e) {
 			System.out.println("mouseExited");
 		}
-		
 	}
 }

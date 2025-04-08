@@ -9,7 +9,11 @@ public class GMenuBar extends JMenuBar {
 	
 	public GMenuBar() {
 		this.fileMenu = new GFileMenu();
-		this.add(this.fileMenu);		
+		this.add(this.fileMenu);	
+		this.fileMenu = new GFileMenu();
+		this.add(this.fileMenu);	
+		this.fileMenu = new GFileMenu();
+		this.add(this.fileMenu);	
 	}
 
 	public void initialize() {
