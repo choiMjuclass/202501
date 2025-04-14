@@ -1,4 +1,4 @@
-package graphicsEditor;
+package frames;
 
 import java.awt.BorderLayout;
 
@@ -9,7 +9,7 @@ public class GMainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// components
 	private GMenuBar menuBar;
-	private GToolBar toolBar;
+	private GShapeToolBar toolBar;
 	private GDrawingPanel drawingPanel;
 	// associations
 	// ...
@@ -25,13 +25,17 @@ public class GMainFrame extends JFrame {
 		this.setJMenuBar(menuBar);
 		
 		this.setLayout(new BorderLayout());
-		this.toolBar = new GToolBar();
+		this.toolBar = new GShapeToolBar();
 		this.add(toolBar, BorderLayout.NORTH);		
 		this.drawingPanel = new GDrawingPanel();
 		this.add(drawingPanel, BorderLayout.CENTER);		
 	}
 
 	public void initialize() {
+		// associate
+		this.menuBar.associate(this.drawingPanel);
+		this.toolBar.associate(this.drawingPanel);
+		
 		// associated attributes
 		this.setVisible(true);
 
