@@ -15,6 +15,12 @@ public class GToolBar extends JToolBar {
 
 		this.rectangleButton = new JRadioButton("rectangle");
 		this.add(this.rectangleButton);
+		this.rectangleButton = new JRadioButton("rectangle");
+		this.add(this.rectangleButton);
+		this.rectangleButton = new JRadioButton("rectangle");
+		this.add(this.rectangleButton);
+		this.rectangleButton = new JRadioButton("rectangle");
+		this.add(this.rectangleButton);
 	}
 
 	public void initialize() {
