@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 
 import shapes.GRectangle;
 import shapes.GShape;
+import transformers.GDrawer;
+import transformers.GMover;
 import transformers.GTransformer;
 
 public class GDrawingPanel extends JPanel {
@@ -21,6 +23,12 @@ public class GDrawingPanel extends JPanel {
 	public enum EDrawingType {
 		e2P,
 		eNP
+	}
+	
+	private enum EDrawingState {
+		eIdle,
+		e2PDrawing,
+		eNPDrawing
 	}
 	
 	public enum EShapeType {
@@ -57,6 +65,9 @@ public class GDrawingPanel extends JPanel {
 
 	private Vector<GShape> shapes;
 	private EShapeType eShapeType;
+	private EDrawingState eDrawingState;
+	private GTransformer transformer;
+
 	
 	public GDrawingPanel() {
 		MouseHandler mouseHandler = new MouseHandler();
@@ -64,6 +75,8 @@ public class GDrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseHandler);
 		
 		this.shapes = new Vector<GShape>();
+		this.eDrawingState = EDrawingState.eIdle;
+		this.transformer = null;
 	}
 
 	public void initialize() {
@@ -80,49 +93,78 @@ public class GDrawingPanel extends JPanel {
 	}	
 	
 
+	private GShape onShape(int x, int y) {
+		for (GShape shape: this.shapes) {
+			if (shape.contains(x, y)) {
+				return shape;
+			}
+		}
+		return null;
+	}
+	
+	private void startPoint(int x, int y) {
+		GShape shape = onShape(x, y);
+		if (shape == null) {
+			shape = eShapeType.newShape();
+			transformer = new GDrawer(shape);
+			if (eShapeType.getEDrawingType() == EDrawingType.e2P) {
+				this.eDrawingState = EDrawingState.e2PDrawing;
+			} else if (eShapeType.getEDrawingType() == EDrawingType.eNP) {
+				this.eDrawingState = EDrawingState.eNPDrawing;
+			}
+		} else {
+			transformer = new GMover(shape);				
+			this.eDrawingState = EDrawingState.e2PDrawing;
+		}
+		transformer.start((Graphics2D)getGraphics(), x, y);	
+	}
+	private void dragPoint(int x, int y) {
+		transformer.drag((Graphics2D)getGraphics(), x, y);
+	}
+	private void addPoint(int x, int y) {
+		
+	}
+	private void finishPoint(int x, int y) {
+		GShape shape = transformer.finish((Graphics2D)getGraphics(), x, y);			
+		shapes.add(shape);
+		this.eDrawingState = EDrawingState.eIdle;
+	}
+	
 	private class MouseHandler implements MouseListener, MouseMotionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			System.out.println("mouseClicked");
 		}
-
-		private GTransformer transformer;
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			GShape shape = eShapeType.newShape();
-			transformer = new GTransformer(shape);
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			transformer.start(graphics2D, e.getX(), e.getY());			
+			if (eDrawingState == EDrawingState.eIdle) {
+				startPoint(e.getX(), e.getY());
+			}
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			transformer.drag(graphics2D, e.getX(), e.getY());			
+			if (eDrawingState == EDrawingState.e2PDrawing) {
+				dragPoint(e.getX(), e.getY());
+			}
 
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			GShape shape = transformer.finish(graphics2D, e.getX(), e.getY());			
-			shapes.add(shape);
+			if (eDrawingState == EDrawingState.e2PDrawing) {
+				finishPoint(e.getX(), e.getY());
+			}
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			System.out.println("mouseMoved");
 		}		
 		
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			System.out.println("mouseEntered");
 		}
 		@Override
 		public void mouseExited(MouseEvent e) {
-			System.out.println("mouseExited");
 		}
 	}
 }
