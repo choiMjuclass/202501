@@ -15,6 +15,7 @@ import shapes.GShape;
 import transformers.GTransformer;
 
 public class GDrawingPanel extends JPanel {
+	
 	private static final long serialVersionUID = 1L;
 	
 	public enum EDrawingType {
@@ -42,7 +43,7 @@ public class GDrawingPanel extends JPanel {
 		public EDrawingType getEDrawingType() {
 			return this.eDrawingType;
 		}
-		public GShape getClassShape() {
+		public GShape newShape() {
 			try {
 				GShape shape = (GShape) classShape.getConstructor().newInstance();
 				return shape;
@@ -54,7 +55,7 @@ public class GDrawingPanel extends JPanel {
 		}
 	}
 
-	private Vector<GRectangle> rectangles;
+	private Vector<GShape> shapes;
 	private EShapeType eShapeType;
 	
 	public GDrawingPanel() {
@@ -62,7 +63,7 @@ public class GDrawingPanel extends JPanel {
 		this.addMouseListener(mouseHandler);
 		this.addMouseMotionListener(mouseHandler);
 		
-		this.rectangles = new Vector<GRectangle>();
+		this.shapes = new Vector<GShape>();
 	}
 
 	public void initialize() {
@@ -73,8 +74,8 @@ public class GDrawingPanel extends JPanel {
 	
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		for (GRectangle rectangle: rectangles) {
-			rectangle.draw((Graphics2D)graphics);
+		for (GShape shape: this.shapes) {
+			shape.draw((Graphics2D)graphics);
 		}
 	}	
 	
@@ -90,7 +91,8 @@ public class GDrawingPanel extends JPanel {
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			transformer = new GTransformer();
+			GShape shape = eShapeType.newShape();
+			transformer = new GTransformer(shape);
 			Graphics2D graphics2D = (Graphics2D)getGraphics();
 			graphics2D.setXORMode(getBackground());
 			transformer.start(graphics2D, e.getX(), e.getY());			
@@ -106,8 +108,8 @@ public class GDrawingPanel extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			Graphics2D graphics2D = (Graphics2D)getGraphics();
 			graphics2D.setXORMode(getBackground());
-			GRectangle rectangle = transformer.finish(graphics2D, e.getX(), e.getY());			
-			rectangles.add(rectangle);
+			GShape shape = transformer.finish(graphics2D, e.getX(), e.getY());			
+			shapes.add(shape);
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
