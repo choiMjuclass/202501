@@ -14,5 +14,4 @@ public class GFileMenu extends JMenu {
 		this.newItem = new JMenuItem("new");
 		this.add(this.newItem);
 	}
-
 }

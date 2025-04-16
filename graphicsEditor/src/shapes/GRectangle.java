@@ -8,7 +8,7 @@ public class GRectangle extends GShape {
 	
 	public GRectangle() {
 		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
-		this.rectangle = (Rectangle2D) this.shape;
+		this.rectangle = (Rectangle2D) this.getShape();
 	}	
 	public void setPoint(int x, int y) {
 		px = x;
