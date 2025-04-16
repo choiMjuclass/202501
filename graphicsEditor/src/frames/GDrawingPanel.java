@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import shapes.GRectangle;
 import shapes.GShape;
+import shapes.GShape.EDrawingType;
 import transformers.GDrawer;
 import transformers.GMover;
 import transformers.GTransformer;
@@ -20,11 +21,6 @@ public class GDrawingPanel extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public enum EDrawingType {
-		e2P,
-		eNP
-	}
-	
 	private enum EDrawingState {
 		eIdle,
 		e2PDrawing,
@@ -32,24 +28,19 @@ public class GDrawingPanel extends JPanel {
 	}
 	
 	public enum EShapeType {
-		eRectnalge("rectangle", EDrawingType.e2P, GRectangle.class),
-		eEllipse("ellipse", EDrawingType.e2P, GRectangle.class),
-		eLine("line", EDrawingType.e2P, GRectangle.class),
-		ePolygon("polygon", EDrawingType.eNP, GRectangle.class);
+		eRectnalge("rectangle",GRectangle.class),
+		eEllipse("ellipse", GRectangle.class),
+		eLine("line", GRectangle.class),
+		ePolygon("polygon", GRectangle.class);
 		
 		private String name;
-		private EDrawingType eDrawingType;
 		private Class<?> classShape;
-		private EShapeType(String name, EDrawingType eDrawingType, Class<?> classShape) {
+		private EShapeType(String name, Class<?> classShape) {
 			this.name = name;
-			this.eDrawingType = eDrawingType;
 			this.classShape = classShape;
 		}
 		public String getName() {
 			return this.name;
-		}
-		public EDrawingType getEDrawingType() {
-			return this.eDrawingType;
 		}
 		public GShape newShape() {
 			try {
@@ -66,7 +57,8 @@ public class GDrawingPanel extends JPanel {
 	private Vector<GShape> shapes;
 	private EShapeType eShapeType;
 	private EDrawingState eDrawingState;
-	private GTransformer transformer;
+	private GTransformer currentTransformer;
+	private GShape currentShape;
 
 	
 	public GDrawingPanel() {
@@ -75,8 +67,10 @@ public class GDrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseHandler);
 		
 		this.shapes = new Vector<GShape>();
+		this.eShapeType = null;
 		this.eDrawingState = EDrawingState.eIdle;
-		this.transformer = null;
+		this.currentTransformer = null;
+		this.currentShape = null;
 	}
 
 	public void initialize() {
@@ -102,32 +96,28 @@ public class GDrawingPanel extends JPanel {
 		return null;
 	}
 	
-	private void startPoint(int x, int y) {
-		GShape shape = onShape(x, y);
-		if (shape == null) {
-			shape = eShapeType.newShape();
-			transformer = new GDrawer(shape);
-			if (eShapeType.getEDrawingType() == EDrawingType.e2P) {
-				this.eDrawingState = EDrawingState.e2PDrawing;
-			} else if (eShapeType.getEDrawingType() == EDrawingType.eNP) {
-				this.eDrawingState = EDrawingState.eNPDrawing;
-			}
+	private GTransformer selectTransformer(int x, int y) {
+		this.currentShape = onShape(x, y);
+		if (currentShape == null) {
+			currentShape = eShapeType.newShape();
+			return new GDrawer(currentShape);
 		} else {
-			transformer = new GMover(shape);				
-			this.eDrawingState = EDrawingState.e2PDrawing;
+			return new GMover(currentShape);
 		}
-		transformer.start((Graphics2D)getGraphics(), x, y);	
+	}
+	
+	private void startPoint(int x, int y) {
+		this.currentTransformer.start((Graphics2D)getGraphics(), x, y);	
 	}
 	private void dragPoint(int x, int y) {
-		transformer.drag((Graphics2D)getGraphics(), x, y);
+		this.currentTransformer.drag((Graphics2D)getGraphics(), x, y);
 	}
 	private void addPoint(int x, int y) {
-		
+		this.currentTransformer.add((Graphics2D)getGraphics(), x, y);
 	}
 	private void finishPoint(int x, int y) {
-		GShape shape = transformer.finish((Graphics2D)getGraphics(), x, y);			
-		shapes.add(shape);
-		this.eDrawingState = EDrawingState.eIdle;
+		this.currentTransformer.finish((Graphics2D)getGraphics(), x, y);			
+		shapes.add(this.currentShape);
 	}
 	
 	private class MouseHandler implements MouseListener, MouseMotionListener {
@@ -140,7 +130,11 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
-				startPoint(e.getX(), e.getY());
+				currentTransformer = selectTransformer(e.getX(), e.getY());
+				if (currentShape.getEDrawingType() == EDrawingType.e2P) {
+					startPoint(e.getX(), e.getY());
+					eDrawingState = EDrawingState.e2PDrawing;
+				}
 			}
 		}
 		@Override
@@ -154,6 +148,7 @@ public class GDrawingPanel extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			if (eDrawingState == EDrawingState.e2PDrawing) {
 				finishPoint(e.getX(), e.getY());
+				eDrawingState = EDrawingState.eIdle;
 			}
 		}
 		@Override

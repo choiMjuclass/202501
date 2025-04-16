@@ -11,6 +11,7 @@ public abstract class GTransformer {
 		this.shape = shape;
 	}
 	public abstract void start(Graphics2D graphics, int x, int y);
+	public abstract void add(Graphics2D graphics, int x, int y);
 	public abstract void drag(Graphics2D graphics, int x, int y);
-	public abstract GShape finish(Graphics2D graphics, int x, int y);
+	public abstract void finish(Graphics2D graphics, int x, int y);
 }

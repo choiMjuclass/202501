@@ -7,14 +7,18 @@ public class GRectangle extends GShape {
 	private int px, py;
 	
 	public GRectangle() {
-		this.rectangle = new Rectangle2D.Float(0, 0, 0, 0);
-		this.shape = this.rectangle;
-	}
-	
+		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
+		this.rectangle = (Rectangle2D) this.shape;
+	}	
 	public void setPoint(int x, int y) {
 		px = x;
 		py = y;
-	}	
+	}
+	@Override
+	public void addPoint(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
 	public void resize(int x, int y) {
 		double w = x - px;
 		double h = y - py;
@@ -27,5 +31,4 @@ public class GRectangle extends GShape {
 		px = x;
 		py = y;
 	}
-
 }

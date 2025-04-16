@@ -18,7 +18,9 @@ public class GMover extends GTransformer {
 		shape.move(x, y);
 		shape.draw(graphics);		
 	}
-	public GShape finish(Graphics2D graphics, int x, int y) {
-		return shape;
+	public void finish(Graphics2D graphics, int x, int y) {
+	}
+	@Override
+	public void add(Graphics2D graphics, int x, int y) {
 	}
 }
