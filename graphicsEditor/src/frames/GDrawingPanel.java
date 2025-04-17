@@ -9,16 +9,15 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import frames.GShapeToolBar.EShapeType;
+import frames.GShapeToolBar.EDrawingTool;
 import shapes.GShape;
 import shapes.GShape.EAnchor;
-import shapes.GShape.EDrawingType;
 import transformers.GDrawer;
 import transformers.GMover;
 import transformers.GTransformer;
+import transformers.GTransformer.EDrawingType;
 
-public class GDrawingPanel extends JPanel {
-	
+public class GDrawingPanel extends JPanel {	
 	private static final long serialVersionUID = 1L;
 	
 	private enum EDrawingState {
@@ -26,14 +25,15 @@ public class GDrawingPanel extends JPanel {
 		e2PDrawing,
 		eNPDrawing
 	}
-	
-
 	private Vector<GShape> shapes;
-	private EShapeType eShapeType;
+	private EDrawingTool eDrawingTool;
 	private EDrawingState eDrawingState;
 	private GTransformer transformer;
 	private GShape currentShape;
 
+	public void setEDrawingTool(EDrawingTool eDrawingTool) {
+		this.eDrawingTool = eDrawingTool;
+	}
 	
 	public GDrawingPanel() {
 		MouseHandler mouseHandler = new MouseHandler();
@@ -41,24 +41,20 @@ public class GDrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseHandler);
 		
 		this.shapes = new Vector<GShape>();
-		this.eShapeType = null;
+		this.eDrawingTool = null;
 		this.eDrawingState = EDrawingState.eIdle;
 		this.transformer = null;
 		this.currentShape = null;
 	}
-
 	public void initialize() {
 	}	
-	public void setEShapeType(EShapeType eShapeType) {
-		this.eShapeType = eShapeType;
-	}
 	
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
 		for (GShape shape: this.shapes) {
 			shape.draw((Graphics2D)graphics);
 		}
-	}	
+	}
 	
 	private GShape onShape(int x, int y) {
 		for (GShape shape: this.shapes) {
@@ -67,17 +63,11 @@ public class GDrawingPanel extends JPanel {
 			}
 		}
 		return null;
-	}	
-	private GShape getCurrentShape(int x, int y) {
-		GShape shape = onShape(x, y);
-		if (shape == null) {
-			shape = eShapeType.newShape();
-		} 
-		return shape;
 	}
 	private GTransformer getTransformer(int x, int y) {
-		if (currentShape.getSelectedAnchor() == null) {
-			currentShape = eShapeType.newShape();
+		this.currentShape = onShape(x, y);
+		if (this.currentShape == null) {
+			this.currentShape = this.eDrawingTool.newShape();
 			return new GDrawer(currentShape);
 		} else if (currentShape.getSelectedAnchor() == EAnchor.MM) {
 			return new GMover(currentShape);
@@ -95,8 +85,10 @@ public class GDrawingPanel extends JPanel {
 		this.transformer.add((Graphics2D)getGraphics(), x, y);
 	}
 	private void finishPoint(int x, int y) {
-		this.transformer.finish((Graphics2D)getGraphics(), x, y);			
-		shapes.add(this.currentShape);
+		this.transformer.finish((Graphics2D)getGraphics(), x, y);
+		if (this.transformer instanceof GDrawer) {
+			this.shapes.add(this.currentShape);
+		}
 	}
 	
 	private class MouseHandler implements MouseListener, MouseMotionListener {
@@ -111,11 +103,9 @@ public class GDrawingPanel extends JPanel {
 			
 		}
 		public void lButton1Clicked(MouseEvent e) {
-			System.out.println("lButton1Clicked");
 			if (eDrawingState == EDrawingState.eIdle) {
-				currentShape = getCurrentShape(e.getX(), e.getY());
-				if (currentShape.getEDrawingType() == EDrawingType.eNP) {
-					transformer = getTransformer(e.getX(), e.getY());
+				transformer = getTransformer(e.getX(), e.getY());
+				if (transformer.getEDrawingType() == EDrawingType.eNP) {
 					startPoint(e.getX(), e.getY());
 					eDrawingState = EDrawingState.eNPDrawing;
 				}
@@ -130,7 +120,6 @@ public class GDrawingPanel extends JPanel {
 			}
 		}		
 		public void lButton2Clicked(MouseEvent e) {
-			System.out.println("lButton2Clicked");
 			if (eDrawingState == EDrawingState.eNPDrawing) {
 				finishPoint(e.getX(), e.getY());
 				eDrawingState = EDrawingState.eIdle;
@@ -140,9 +129,8 @@ public class GDrawingPanel extends JPanel {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
-				currentShape = getCurrentShape(e.getX(), e.getY());
-				if (currentShape.getEDrawingType() == EDrawingType.e2P) {
-					transformer = getTransformer(e.getX(), e.getY());
+				transformer = getTransformer(e.getX(), e.getY());
+				if (transformer.getEDrawingType() == EDrawingType.e2P) {
 					startPoint(e.getX(), e.getY());
 					eDrawingState = EDrawingState.e2PDrawing;
 				}

@@ -5,6 +5,8 @@ import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 import java.util.Vector;
 
+import transformers.GTransformer.EDrawingType;
+
 public abstract class GShape {
 	public enum EAnchor {
 		EE,
@@ -17,12 +19,7 @@ public abstract class GShape {
 		NW,
 		RR,
 		MM
-	}
-	public enum EDrawingType {
-		e2P,
-		eNP
-	}
-	
+	}	
 	private Shape shape;
 	private EDrawingType eDrawingType;
 	private EAnchor eSelectedAnchor;
@@ -44,6 +41,9 @@ public abstract class GShape {
 	public Shape getShape() {
 		return this.shape;
 	}
+	public void setShape(Shape shape) {
+		this.shape = shape;
+	}
 	public EDrawingType getEDrawingType() {
 		return this.eDrawingType;
 	}
@@ -61,17 +61,17 @@ public abstract class GShape {
 	}
 	
 	public EAnchor contains(int x, int y) {
-		for (int i=0; i<EAnchor.values().length-1; i++) {
-			if (this.anchors.get(i).contains(x, y)) {
-				this.eSelectedAnchor = EAnchor.values()[i];
-				return this.eSelectedAnchor;
-			}				
-		}
+		this.eSelectedAnchor = null;
+//		for (int i=0; i<EAnchor.values().length-1; i++) {
+//			if (this.anchors.get(i).contains(x, y)) {
+//				this.eSelectedAnchor = EAnchor.values()[i];
+//				return this.eSelectedAnchor;
+//			}				
+//		}
 		if (this.shape.contains(x, y)) {
 			this.eSelectedAnchor = EAnchor.MM;
 			return this.eSelectedAnchor;
 		}
-		this.eSelectedAnchor = null;
 		return this.eSelectedAnchor;
 	}	
 	
@@ -79,8 +79,9 @@ public abstract class GShape {
 		graphics2D.draw(shape);
 	}
 	
-	public abstract void setPoint(int x, int y);
+	public abstract void startDrawing(int x, int y);
 	public abstract void addPoint(int x, int y);
-	public abstract void resize(int x, int y);
-	public abstract void move(int x, int y);
+	public abstract void drawing(int x, int y);
+	public abstract void startMoving(int x, int y);
+	public abstract void moving(int x, int y);
 }

@@ -8,21 +8,22 @@ import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 import javax.swing.JToolBar;
 
+import shapes.GPolygon;
 import shapes.GRectangle;
 import shapes.GShape;
 
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 	
-	public enum EShapeType {
+	public enum EDrawingTool {
 		eRectnalge("rectangle",GRectangle.class),
 		eEllipse("ellipse", GRectangle.class),
 		eLine("line", GRectangle.class),
-		ePolygon("polygon", GRectangle.class);
+		ePolygon("polygon", GPolygon.class);
 		
 		private String name;
 		private Class<?> classShape;
-		private EShapeType(String name, Class<?> classShape) {
+		private EDrawingTool(String name, Class<?> classShape) {
 			this.name = name;
 			this.classShape = classShape;
 		}
@@ -47,7 +48,7 @@ public class GShapeToolBar extends JToolBar {
 	
 	public GShapeToolBar() {
 		ButtonGroup buttonGroup = new ButtonGroup();
-		for (EShapeType eShpaeType: EShapeType.values()) {
+		for (EDrawingTool eShpaeType: EDrawingTool.values()) {
 			JRadioButton radioButton = new JRadioButton(eShpaeType.getName());
 			ActionHandler actionHandler = new ActionHandler();
 			radioButton.addActionListener(actionHandler);
@@ -58,7 +59,7 @@ public class GShapeToolBar extends JToolBar {
 	}
 
 	public void initialize() {
-		JRadioButton radioButton = (JRadioButton) this.getComponent(EShapeType.eRectnalge.ordinal());
+		JRadioButton radioButton = (JRadioButton) this.getComponent(EDrawingTool.eRectnalge.ordinal());
 		radioButton.doClick();
 	}
 
@@ -70,8 +71,8 @@ public class GShapeToolBar extends JToolBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String sShapeType = e.getActionCommand();
-			EShapeType eShapeType = EShapeType.valueOf(sShapeType);
-			drawingPanel.setEShapeType(eShapeType);
+			EDrawingTool eShapeType = EDrawingTool.valueOf(sShapeType);
+			drawingPanel.setEDrawingTool(eShapeType);
 		}
 		
 	}

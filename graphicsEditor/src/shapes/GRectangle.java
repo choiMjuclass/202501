@@ -2,6 +2,8 @@ package shapes;
 
 import java.awt.geom.Rectangle2D;
 
+import transformers.GTransformer.EDrawingType;
+
 public class GRectangle extends GShape {
 	private Rectangle2D rectangle;
 	private int px, py;
@@ -10,7 +12,7 @@ public class GRectangle extends GShape {
 		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
 		this.rectangle = (Rectangle2D) this.getShape();
 	}	
-	public void setPoint(int x, int y) {
+	public void startDrawing(int x, int y) {
 		px = x;
 		py = y;
 	}
@@ -19,12 +21,16 @@ public class GRectangle extends GShape {
 		// TODO Auto-generated method stub
 		
 	}
-	public void resize(int x, int y) {
+	public void drawing(int x, int y) {
 		double w = x - px;
 		double h = y - py;
 		this.rectangle.setFrame(px, py, w, h);
 	}
-	public void move(int x, int y) {
+	public void startMoving(int x, int y) {
+		px = x;
+		py = y;
+	}
+	public void moving(int x, int y) {
 		double ox = rectangle.getX() + x - px;
 		double oy = rectangle.getY() + y - py;
 		this.rectangle.setFrame(ox, oy, rectangle.getWidth(), rectangle.getHeight());
