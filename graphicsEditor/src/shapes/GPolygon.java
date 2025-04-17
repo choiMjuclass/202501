@@ -11,6 +11,7 @@ public class GPolygon extends GShape {
 		super(new Polygon(), EDrawingType.eNP);
 		this.polygon = (Polygon) this.getShape();
 	}	
+	@Override
 	public void startDrawing(int x, int y) {
 		polygon.addPoint(x, y);
 		polygon.addPoint(x, y);
@@ -19,6 +20,7 @@ public class GPolygon extends GShape {
 	public void addPoint(int x, int y) {
 		polygon.addPoint(x, y);		
 	}
+	@Override
 	public void drawing(int x, int y) {
 		polygon.xpoints[polygon.npoints-1] = x;
 		polygon.ypoints[polygon.npoints-1] = y;

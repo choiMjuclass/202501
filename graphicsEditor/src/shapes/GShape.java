@@ -3,17 +3,20 @@ package shapes;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import transformers.GTransformer.EDrawingType;
 
 public abstract class GShape {
-	private final static int ANCHOR_WIDTH = 10;
-	private final static int ANCHOR_HEIGHT = 10;
+	private final static int ANCHOR_WIDTH = 8;
+	private final static int ANCHOR_HEIGHT = 8;
 
 	public enum EAnchor {
 		eEE(new Cursor(Cursor.E_RESIZE_CURSOR)),
@@ -54,7 +57,7 @@ public abstract class GShape {
 			this.anchors[i] = new Ellipse2D.Double(0, 0, 0, 0);
 		}
 		
-        this.transform = new AffineTransform();
+        this.transform = new AffineTransform();      
 	}
 	
 	public Shape getShape() {
@@ -115,7 +118,7 @@ public abstract class GShape {
 		double x = bounds.getX()-ANCHOR_WIDTH/2;
 		double y = bounds.getY()-ANCHOR_HEIGHT/2;
 		double w = bounds.getWidth();
-		double h = bounds.getHeight();
+		double h = bounds.getHeight();		
 		
 		this.anchors[EAnchor.eEE.ordinal()].setFrame(x+w, y+h/2, ANCHOR_WIDTH, ANCHOR_HEIGHT);
 		this.anchors[EAnchor.eWW.ordinal()].setFrame(x, y+h/2, ANCHOR_WIDTH, ANCHOR_HEIGHT);
@@ -128,11 +131,16 @@ public abstract class GShape {
 		this.anchors[EAnchor.eRR.ordinal()].setFrame(x+w/2, y-30, ANCHOR_WIDTH, ANCHOR_HEIGHT);
 	
 		for(Ellipse2D anchor: this.anchors) {
+			Rectangle2D tBounds = this.getTransformedShape(anchor).getBounds2D();
+			double cx = tBounds.getCenterX()-ANCHOR_WIDTH/2;
+			double cy = tBounds.getCenterY()-ANCHOR_HEIGHT/2;
+			Ellipse2D tAnchor = new Ellipse2D.Double(cx, cy, ANCHOR_WIDTH,ANCHOR_HEIGHT );
+			
 			Color color = graphics.getColor();
 			graphics.setColor(graphics.getBackground());
-			graphics.fill(this.getTransformedShape(anchor));
+			graphics.fill(tAnchor);
 			graphics.setColor(color);
-			graphics.draw(this.getTransformedShape(anchor));
+			graphics.draw(tAnchor);
 		}	
 	}
 	
@@ -141,38 +149,58 @@ public abstract class GShape {
 		py = y;
 	}
     public void translate(int x, int y) {
-		double dx = x - px;
-		double dy = y - py;
-        this.transform.translate(dx, dy);
-		px = x;
-		py = y;
-    }
+ 		try {
+ 	       // 현재 마우스 좌표 (화면 기준)를 도형 좌표계로 변환
+ 	        Point2D p1 = new Point2D.Double(px, py);
+ 	        Point2D p2 = new Point2D.Double(x, y);
+ 	        AffineTransform inverse = this.transform.createInverse();
+ 	        
+			Point2D localP1 = inverse.transform(p1, null);
+	        Point2D localP2 = inverse.transform(p2, null);
+
+	        double dx = localP2.getX() - localP1.getX();
+	        double dy = localP2.getY() - localP1.getY();
+	        
+	        this.transform.translate(dx, dy);
+	        
+			px = x;
+			py = y;
+			
+		} catch (NoninvertibleTransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+     }
     
-	public Point getResizeAnchorPoint(int x, int y, Rectangle r) {
+    private EAnchor eReiszeAnchor;
+    private int cx, cy;
+	public Point getResizeCenter(int x, int y) {
 		int cx=0, cy=0;
 		this.eReiszeAnchor = null;
+		Rectangle r = this.shape.getBounds();
 		switch (this.eSelectedAnchor) {
-			case eNW: eReiszeAnchor = EAnchors.eSE; cx=r.x+r.width; 	cy=r.y+r.height; 	break;
-			case eWW: eReiszeAnchor = EAnchors.eEE; cx=r.x+r.width;		cy=r.y+r.height/2; 	break;				
-			case eSW: eReiszeAnchor = EAnchors.eNE; cx=r.x+r.width;		cy=r.y; 			break;				
-			case eSS: eReiszeAnchor = EAnchors.eNN; cx=r.x+r.width/2;	cy=r.y; 			break;				
-			case eSE: eReiszeAnchor = EAnchors.eNW; cx=r.x; 			cy=r.y;			 	break;				
-			case eEE: eReiszeAnchor = EAnchors.eWW; cx=r.x; 			cy=r.y+r.height/2; 	break;				
-			case eNE: eReiszeAnchor = EAnchors.eSW; cx=r.x; 			cy=r.y+r.height; 	break;				
-			case eNN: eReiszeAnchor = EAnchors.eSS; cx=r.x+r.width/2;	cy=r.y+r.height; 			break;				
+			case eNW: eReiszeAnchor = EAnchor.eSE; cx=r.x+r.width; 		cy=r.y+r.height; 	break;
+			case eWW: eReiszeAnchor = EAnchor.eEE; cx=r.x+r.width;		cy=r.y+r.height/2; 	break;				
+			case eSW: eReiszeAnchor = EAnchor.eNE; cx=r.x+r.width;		cy=r.y; 			break;				
+			case eSS: eReiszeAnchor = EAnchor.eNN; cx=r.x+r.width/2;	cy=r.y; 			break;				
+			case eSE: eReiszeAnchor = EAnchor.eNW; cx=r.x; 				cy=r.y;			 	break;				
+			case eEE: eReiszeAnchor = EAnchor.eWW; cx=r.x; 				cy=r.y+r.height/2; 	break;				
+			case eNE: eReiszeAnchor = EAnchor.eSW; cx=r.x; 				cy=r.y+r.height; 	break;				
+			case eNN: eReiszeAnchor = EAnchor.eSS; cx=r.x+r.width/2;	cy=r.y+r.height; 	break;				
 			default: break;
 		}
 		return new Point(cx, cy);
 	}
 	public void startScale(int x, int y) {
-		Rectangle rectangle = this.shape.getBounds();
-		Point resizeAnchorPoint = this.anchors.getResizeAnchorPoint(x, y, rectangle);
-		this.cx = resizeAnchorPoint.x;
-		this.cy = resizeAnchorPoint.y;
+		Point center = this.getResizeCenter(x, y);
+		this.cx = center.x;
+		this.cy = center.y;
+		px = x;
+		py = y;
 	}
-    public void scale(double sx, double sy, Point2D center) {
+    public void scale(int x, int y) {
 		int dx =0; int dy=0;
-		EAnchors eReiszeAnchor = this.anchors.getResizeAnchor();
 		switch (eReiszeAnchor) {
 			case eNW: dx = (x-px); 	dy = (y-py); 	break;
 			case eWW: dx = (x-px); 	dy = 0; 		break;				
@@ -184,7 +212,7 @@ public abstract class GShape {
 			case eNN: dx = 0; 		dy = (y-py);  	break;				
 			default: break;
 		}
-		Shape transformedShape = this.shape.getTransformedShape();
+		Shape transformedShape = this.getTransformedShape(this.shape);
 		double w1 = transformedShape.getBounds().width;
 		double w2 = dx + w1;
 		double h1 = transformedShape.getBounds().height;
@@ -193,45 +221,61 @@ public abstract class GShape {
 		double xScale = w2/w1;
 		double yScale = h2/h1;
 		
-		this.affineTransform.translate(cx, cy);
-		this.affineTransform.scale(xScale, yScale);
-		this.affineTransform.translate(-cx, -cy);
-    }
-    
-	public void startRotate(int x, int y) {
+		this.transform.translate(cx, cy);
+		this.transform.scale(xScale, yScale);
+		this.transform.translate(-cx, -cy);
+		
 		px = x;
 		py = y;
-	}
-    public void rotate(double theta, Point2D center) {
-        this.transform.rotate(theta, center.getX(), center.getY());
+
     }
-//	private void test() {
-//		Rectangle2D bounds = this.shape.getBounds2D();
-//		for (EAnchor eAnchor: EAnchor.values()) {
-//			switch(eAnchor) {
-//			case EE:
-//				break;
-//			case WW:
-//				break;
-//			case SS:
-//				break;
-//			case NN:
-//				break;
-//			case NE:
-//				break;
-//			case SE:
-//				break;
-//			case NW:
-//				break;
-//			case SW:
-//				break;
-//			case RR:
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//	}
+    
+    private double rotateCenterX;
+    private double rotateCenterY;
+	public void startRotate(int x, int y) {
+	    Shape transformedShape = getTransformedShape(this.shape);
+	    Rectangle2D bounds = transformedShape.getBounds2D();
+	    Point2D center = new Point2D.Double(bounds.getCenterX(), bounds.getCenterY());
+
+	    try {
+	        // transform 이전 좌표계로 되돌림
+	        AffineTransform inverse = this.transform.createInverse();
+	        Point2D localCenter = inverse.transform(center, null);
+	        this.rotateCenterX = localCenter.getX();
+	        this.rotateCenterY = localCenter.getY();
+	    } catch (NoninvertibleTransformException e) {
+	        e.printStackTrace();
+	    }
+
+	    this.px = x;
+	    this.py = y;
+	}
+	
+    public void rotate(int x, int y) {
+        try {
+            // 마우스 위치도 로컬 좌표계로 변환
+            AffineTransform inverse = this.transform.createInverse();
+            Point2D pPrev = inverse.transform(new Point2D.Double(px, py), null);
+            Point2D pCurr = inverse.transform(new Point2D.Double(x, y), null);
+
+            double dx1 = pPrev.getX() - rotateCenterX;
+            double dy1 = pPrev.getY() - rotateCenterY;
+            double dx2 = pCurr.getX() - rotateCenterX;
+            double dy2 = pCurr.getY() - rotateCenterY;
+
+            double angle1 = Math.atan2(dy1, dx1);
+            double angle2 = Math.atan2(dy2, dx2);
+            double theta = angle2 - angle1;
+
+            // 로컬 중심 기준 회전 적용
+            this.transform.rotate(theta, rotateCenterX, rotateCenterY);
+
+            this.px = x;
+            this.py = y;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
 	public abstract void startDrawing(int x, int y);
 	public abstract void addPoint(int x, int y);

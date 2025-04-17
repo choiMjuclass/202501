@@ -17,6 +17,7 @@ public class GBounds extends GShape {
 		this.rectangle = (Rectangle2D) this.getShape();
 		this.shapes = new Vector<GShape>();
 	}	
+	@Override
 	public void startDrawing(int x, int y) {
 		px = x;
 		py = y;
@@ -26,6 +27,7 @@ public class GBounds extends GShape {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
 	public void drawing(int x, int y) {
 		double w = x - px;
 		double h = y - py;
@@ -37,6 +39,7 @@ public class GBounds extends GShape {
 		this.shapes.add(shape);
 	}
 	
+	@Override
 	public void drawAnchors(Graphics2D graphics, Rectangle2D bounds) {
 	}
 }

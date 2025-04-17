@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,8 @@ import shapes.GShape;
 import shapes.GShape.EAnchor;
 import transformers.GDrawer;
 import transformers.GMover;
+import transformers.GRotator;
+import transformers.GScaler;
 import transformers.GSelector;
 import transformers.GTransformer;
 import transformers.GTransformer.EDrawingType;
@@ -77,14 +80,14 @@ public class GDrawingPanel extends JPanel {
 				} else if (currentShape.getSelectedAnchor() == EAnchor.eRR) {
 					return new GRotator(currentShape);
 				} else {
-					
+					return new GScaler(currentShape);
 				}
 			}			
 		} else {
 			this.currentShape = this.eDrawingTool.newShape();
+			this.shapes.add(currentShape);
 			return new GDrawer(currentShape);			
 		}
-		return null;
 	}
 	
 	private void startPoint(int x, int y) {
@@ -92,20 +95,20 @@ public class GDrawingPanel extends JPanel {
 	}
 	private void dragPoint(int x, int y) {
 		this.transformer.drag((Graphics2D)getGraphics(), x, y);
+		this.repaint();
 	}
 	private void addPoint(int x, int y) {
 		this.transformer.add((Graphics2D)getGraphics(), x, y);
 	}
 	private void finishPoint(int x, int y) {
 		this.transformer.finish((Graphics2D)getGraphics(), x, y);
-		for (GShape shape: this.shapes) {
-			shape.setSelected(false);
-		}
-		this.currentShape.setSelected(true);
 		
-		if (this.transformer instanceof GDrawer) {
-			this.shapes.add(this.currentShape);
-		} else if (this.transformer instanceof GSelector) {
+		if (this.transformer instanceof GSelector) {
+			for (GShape shape: this.shapes) {
+				shape.setSelected(false);
+			}
+			this.currentShape.setSelected(true);
+			
 			for (GShape shape: this.shapes) {
 				shape.setSelected(this.currentShape.contains(shape));
 				if (shape.isSelected()) {
@@ -114,6 +117,22 @@ public class GDrawingPanel extends JPanel {
 			}
 		}
 		this.repaint();
+	}
+	
+	private void changeCursor(int x, int y) {
+		if (this.eDrawingTool == EDrawingTool.eSelect) {
+			GShape shape = onShape(x, y);
+			if (shape != null) {
+				Cursor cursor = shape.getSelectedAnchor().getCursor();
+				if (cursor == null) {
+					this.setCursor(Cursor.getDefaultCursor());
+				} else {
+					this.setCursor(cursor);
+				}
+			} else {
+				this.setCursor(Cursor.getDefaultCursor());
+			}
+		}
 	}
 	
 	private class MouseHandler implements MouseListener, MouseMotionListener {
@@ -140,7 +159,9 @@ public class GDrawingPanel extends JPanel {
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			if (eDrawingState == EDrawingState.eNPDrawing) {
+			if (eDrawingState == EDrawingState.eIdle) {
+				changeCursor(e.getX(), e.getY());
+			} else if (eDrawingState == EDrawingState.eNPDrawing) {
 				dragPoint(e.getX(), e.getY());
 			}
 		}		

@@ -15,15 +15,10 @@ public class GSelector extends GTransformer {
 	}
 	
 	public void drag(Graphics2D graphics, int x, int y) {
-		graphics.setXORMode(graphics.getBackground());
-		this.getShape().draw(graphics);
 		this.getShape().drawing(x, y);
-		this.getShape().draw(graphics);		
 	}
 	
 	public void finish(Graphics2D graphics, int x, int y) {
-		graphics.setXORMode(graphics.getBackground());
-		this.getShape().draw(graphics);		
 	}
 	
 	@Override

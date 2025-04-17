@@ -12,6 +12,7 @@ public class GRectangle extends GShape {
 		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
 		this.rectangle = (Rectangle2D) this.getShape();
 	}	
+	@Override
 	public void startDrawing(int x, int y) {
 		px = x;
 		py = y;
@@ -21,6 +22,7 @@ public class GRectangle extends GShape {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
 	public void drawing(int x, int y) {
 		double w = x - px;
 		double h = y - py;
