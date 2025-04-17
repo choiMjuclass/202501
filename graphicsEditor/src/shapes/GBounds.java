@@ -8,9 +8,9 @@ import transformers.GTransformer.EDrawingType;
 
 public class GBounds extends GShape {
 	private Rectangle2D rectangle;
-	private int px, py;
 	
 	private Vector<GShape> shapes;
+	private int px, py;
 	
 	public GBounds() {
 		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
@@ -31,17 +31,7 @@ public class GBounds extends GShape {
 		double h = y - py;
 		this.rectangle.setFrame(px, py, w, h);
 	}
-	public void startMoving(int x, int y) {
-		px = x;
-		py = y;
-	}
-	public void moving(int x, int y) {
-		double ox = rectangle.getX() + x - px;
-		double oy = rectangle.getY() + y - py;
-		this.rectangle.setFrame(ox, oy, rectangle.getWidth(), rectangle.getHeight());
-		px = x;
-		py = y;
-	}
+
 	@Override
 	public void add(GShape shape) {
 		this.shapes.add(shape);

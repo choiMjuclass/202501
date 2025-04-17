@@ -10,12 +10,12 @@ public class GMover extends GTransformer {
 		super(shape, EDrawingType.e2P);
 	}
 	public void start(Graphics2D graphics, int x, int y) {
-		this.getShape().startMoving(x, y);
+		this.getShape().startTranslate(x, y);
 	}
 	public void drag(Graphics2D graphics, int x, int y) {
 		graphics.setXORMode(graphics.getBackground());
 		this.getShape().draw(graphics);
-		this.getShape().moving(x, y);
+		this.getShape().translate(x, y);
 		this.getShape().draw(graphics);		
 	}
 	public void finish(Graphics2D graphics, int x, int y) {

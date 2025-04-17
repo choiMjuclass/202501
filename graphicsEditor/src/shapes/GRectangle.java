@@ -26,17 +26,6 @@ public class GRectangle extends GShape {
 		double h = y - py;
 		this.rectangle.setFrame(px, py, w, h);
 	}
-	public void startMoving(int x, int y) {
-		px = x;
-		py = y;
-	}
-	public void moving(int x, int y) {
-		double ox = rectangle.getX() + x - px;
-		double oy = rectangle.getY() + y - py;
-		this.rectangle.setFrame(ox, oy, rectangle.getWidth(), rectangle.getHeight());
-		px = x;
-		py = y;
-	}
 	@Override
 	public void add(GShape shape) {
 		// TODO Auto-generated method stub

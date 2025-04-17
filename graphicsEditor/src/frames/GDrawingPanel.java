@@ -35,7 +35,7 @@ public class GDrawingPanel extends JPanel {
 	public void setEDrawingTool(EDrawingTool eDrawingTool) {
 		this.eDrawingTool = eDrawingTool;
 	}
-	
+
 	public GDrawingPanel() {
 		MouseHandler mouseHandler = new MouseHandler();
 		this.addMouseListener(mouseHandler);
@@ -74,6 +74,10 @@ public class GDrawingPanel extends JPanel {
 			} else {
 				if (currentShape.getSelectedAnchor() == EAnchor.eMM) {
 					return new GMover(currentShape);
+				} else if (currentShape.getSelectedAnchor() == EAnchor.eRR) {
+					return new GRotator(currentShape);
+				} else {
+					
 				}
 			}			
 		} else {
@@ -103,7 +107,7 @@ public class GDrawingPanel extends JPanel {
 			this.shapes.add(this.currentShape);
 		} else if (this.transformer instanceof GSelector) {
 			for (GShape shape: this.shapes) {
-				shape.setSelected(this.currentShape.contains(shape.getBounds()));
+				shape.setSelected(this.currentShape.contains(shape));
 				if (shape.isSelected()) {
 					this.currentShape.add(shape);
 				}
@@ -120,9 +124,9 @@ public class GDrawingPanel extends JPanel {
 				lButton1Clicked(e);
 			} else if (e.getButton() == 1 && e.getClickCount() == 2) {
 				lButton2Clicked(e);
-			}
-			
+			}			
 		}
+
 		public void lButton1Clicked(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
 				transformer = getTransformer(e.getX(), e.getY());
@@ -146,7 +150,7 @@ public class GDrawingPanel extends JPanel {
 				eDrawingState = EDrawingState.eIdle;
 			}
 		}
-		
+
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
