@@ -1,16 +1,21 @@
 package shapes;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Vector;
 
 import transformers.GTransformer.EDrawingType;
 
-public class GRectangle extends GShape {
+public class GBounds extends GShape {
 	private Rectangle2D rectangle;
 	private int px, py;
 	
-	public GRectangle() {
+	private Vector<GShape> shapes;
+	
+	public GBounds() {
 		super(new Rectangle2D.Float(0, 0, 0, 0), EDrawingType.e2P);
 		this.rectangle = (Rectangle2D) this.getShape();
+		this.shapes = new Vector<GShape>();
 	}	
 	public void startDrawing(int x, int y) {
 		px = x;
@@ -39,7 +44,9 @@ public class GRectangle extends GShape {
 	}
 	@Override
 	public void add(GShape shape) {
-		// TODO Auto-generated method stub
-		
+		this.shapes.add(shape);
+	}
+	
+	public void drawAnchors(Graphics2D graphics, Rectangle2D bounds) {
 	}
 }

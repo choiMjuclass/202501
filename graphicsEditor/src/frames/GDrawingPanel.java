@@ -72,7 +72,7 @@ public class GDrawingPanel extends JPanel {
 				this.currentShape = this.eDrawingTool.newShape();
 				return new GSelector(currentShape);
 			} else {
-				if (currentShape.getSelectedAnchor() == EAnchor.MM) {
+				if (currentShape.getSelectedAnchor() == EAnchor.eMM) {
 					return new GMover(currentShape);
 				}
 			}			
@@ -94,9 +94,22 @@ public class GDrawingPanel extends JPanel {
 	}
 	private void finishPoint(int x, int y) {
 		this.transformer.finish((Graphics2D)getGraphics(), x, y);
+		for (GShape shape: this.shapes) {
+			shape.setSelected(false);
+		}
+		this.currentShape.setSelected(true);
+		
 		if (this.transformer instanceof GDrawer) {
 			this.shapes.add(this.currentShape);
+		} else if (this.transformer instanceof GSelector) {
+			for (GShape shape: this.shapes) {
+				shape.setSelected(this.currentShape.contains(shape.getBounds()));
+				if (shape.isSelected()) {
+					this.currentShape.add(shape);
+				}
+			}
 		}
+		this.repaint();
 	}
 	
 	private class MouseHandler implements MouseListener, MouseMotionListener {

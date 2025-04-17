@@ -38,5 +38,11 @@ public class GPolygon extends GShape {
 		polygon.invalidate();
 		px = x;
 		py = y;
+	}
+	
+	@Override
+	public void add(GShape shape) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

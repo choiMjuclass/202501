@@ -19,7 +19,6 @@ public class GDrawer extends GTransformer {
 		this.getShape().draw(graphics);		
 	}
 	public void finish(Graphics2D graphics, int x, int y) {
-		this.getShape().setSelected(true);
 	}
 	@Override
 	public void add(Graphics2D graphics, int x, int y) {
