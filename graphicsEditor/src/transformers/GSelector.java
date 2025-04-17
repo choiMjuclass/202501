@@ -4,9 +4,9 @@ import java.awt.Graphics2D;
 
 import shapes.GShape;
 
-public class GDrawer extends GTransformer {
+public class GSelector extends GTransformer {
 
-	public GDrawer(GShape shape) {
+	public GSelector(GShape shape) {
 		super(shape, shape.getEDrawingType());
 	}
 	public void start(Graphics2D graphics, int x, int y) {
@@ -19,11 +19,10 @@ public class GDrawer extends GTransformer {
 		this.getShape().draw(graphics);		
 	}
 	public void finish(Graphics2D graphics, int x, int y) {
-		this.getShape().setSelected(true);
+		graphics.setXORMode(graphics.getBackground());
+		this.getShape().draw(graphics);		
 	}
 	@Override
 	public void add(Graphics2D graphics, int x, int y) {
-		// TODO Auto-generated method stub
-		this.getShape().addPoint(x, y);
 	}
 }

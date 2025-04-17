@@ -14,6 +14,7 @@ import shapes.GShape;
 import shapes.GShape.EAnchor;
 import transformers.GDrawer;
 import transformers.GMover;
+import transformers.GSelector;
 import transformers.GTransformer;
 import transformers.GTransformer.EDrawingType;
 
@@ -65,12 +66,19 @@ public class GDrawingPanel extends JPanel {
 		return null;
 	}
 	private GTransformer getTransformer(int x, int y) {
-		this.currentShape = onShape(x, y);
-		if (this.currentShape == null) {
+		if ( this.eDrawingTool == EDrawingTool.eSelect) {
+			this.currentShape = onShape(x, y);
+			if (this.currentShape == null) {
+				this.currentShape = this.eDrawingTool.newShape();
+				return new GSelector(currentShape);
+			} else {
+				if (currentShape.getSelectedAnchor() == EAnchor.MM) {
+					return new GMover(currentShape);
+				}
+			}			
+		} else {
 			this.currentShape = this.eDrawingTool.newShape();
-			return new GDrawer(currentShape);
-		} else if (currentShape.getSelectedAnchor() == EAnchor.MM) {
-			return new GMover(currentShape);
+			return new GDrawer(currentShape);			
 		}
 		return null;
 	}

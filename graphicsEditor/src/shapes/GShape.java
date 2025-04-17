@@ -20,9 +20,9 @@ public abstract class GShape {
 		RR,
 		MM
 	}	
-	private Shape shape;
+	protected Shape shape;
 	private EDrawingType eDrawingType;
-	private EAnchor eSelectedAnchor;
+	protected EAnchor eSelectedAnchor;
 	private boolean bSelected;
 	private Vector<Ellipse2D> anchors;
 	
@@ -62,12 +62,12 @@ public abstract class GShape {
 	
 	public EAnchor contains(int x, int y) {
 		this.eSelectedAnchor = null;
-//		for (int i=0; i<EAnchor.values().length-1; i++) {
-//			if (this.anchors.get(i).contains(x, y)) {
-//				this.eSelectedAnchor = EAnchor.values()[i];
-//				return this.eSelectedAnchor;
-//			}				
-//		}
+		for (int i=0; i<EAnchor.values().length-1; i++) {
+			if (this.anchors.get(i).contains(x, y)) {
+				this.eSelectedAnchor = EAnchor.values()[i];
+				return this.eSelectedAnchor;
+			}				
+		}
 		if (this.shape.contains(x, y)) {
 			this.eSelectedAnchor = EAnchor.MM;
 			return this.eSelectedAnchor;

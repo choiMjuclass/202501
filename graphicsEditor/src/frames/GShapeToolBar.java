@@ -16,6 +16,7 @@ public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 	
 	public enum EDrawingTool {
+		eSelect("select",GRectangle.class),
 		eRectnalge("rectangle",GRectangle.class),
 		eEllipse("ellipse", GRectangle.class),
 		eLine("line", GRectangle.class),
@@ -59,7 +60,7 @@ public class GShapeToolBar extends JToolBar {
 	}
 
 	public void initialize() {
-		JRadioButton radioButton = (JRadioButton) this.getComponent(EDrawingTool.eRectnalge.ordinal());
+		JRadioButton radioButton = (JRadioButton) this.getComponent(EDrawingTool.eSelect.ordinal());
 		radioButton.doClick();
 	}
 
