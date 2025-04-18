@@ -91,6 +91,9 @@ public class GDrawingPanel extends JPanel {
 	}
 	
 	private void startPoint(int x, int y) {
+		for (GShape shape: this.shapes) {
+			shape.setSelected(false);
+		}	
 		this.transformer.start((Graphics2D)getGraphics(), x, y);	
 	}
 	private void dragPoint(int x, int y) {
@@ -100,22 +103,19 @@ public class GDrawingPanel extends JPanel {
 	private void addPoint(int x, int y) {
 		this.transformer.add((Graphics2D)getGraphics(), x, y);
 	}
-	private void finishPoint(int x, int y) {
-		this.transformer.finish((Graphics2D)getGraphics(), x, y);
+	private void finishPoint(int x, int y) {		
 		
+		this.currentShape.setSelected(true);
+
 		if (this.transformer instanceof GSelector) {
-			for (GShape shape: this.shapes) {
-				shape.setSelected(false);
-			}
-			this.currentShape.setSelected(true);
-			
 			for (GShape shape: this.shapes) {
 				shape.setSelected(this.currentShape.contains(shape));
 				if (shape.isSelected()) {
 					this.currentShape.add(shape);
 				}
 			}
-		}
+		}		
+		this.transformer.finish((Graphics2D)getGraphics(), x, y);
 		this.repaint();
 	}
 	
