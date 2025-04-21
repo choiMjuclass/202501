@@ -8,6 +8,7 @@ public class GShape {
 	public GShape() {		
 	}
 	
+	
 	public void draw(Graphics2D graphics2D) {
 		graphics2D.draw(shape);
 	}

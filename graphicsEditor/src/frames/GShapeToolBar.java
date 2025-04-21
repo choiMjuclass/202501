@@ -2,25 +2,64 @@ package frames;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 import javax.swing.JToolBar;
 
-import frames.GDrawingPanel.EShapeType;
+import frames.GDrawingPanel.EDrawingType;
+import shapes.GRectangle;
+import shapes.GShape;
 
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 
-	// components
+	public enum EShapeType {
+		eSelect("select", EDrawingType.e2P, GRectangle.class),
+		eRectnalge("rectangle", EDrawingType.e2P, GRectangle.class),
+		eEllipse("ellipse", EDrawingType.e2P, GRectangle.class),
+		eLine("line", EDrawingType.e2P, GRectangle.class),
+		ePolygon("polygon", EDrawingType.eNP, GRectangle.class);
+		
+		private String name;
+		private EDrawingType eDrawingType;
+		private Class<?> classShape;
+		private EShapeType(String name, EDrawingType eDrawingType, Class<?> classShape) {
+			this.name = name;
+			this.eDrawingType = eDrawingType;
+			this.classShape = classShape;
+		}
+		public String getName() {
+			return this.name;
+		}
+		public EDrawingType getEDrawingType() {
+			return this.eDrawingType;
+		}
+		public GShape newShape() {
+			try {
+				GShape shape = (GShape) classShape.getConstructor().newInstance();
+				return shape;
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}	// components
 
 	// associations
 	private GDrawingPanel drawingPanel;
 	
 	public GShapeToolBar() {
+		ButtonGroup buttonGroup = new ButtonGroup();
 		for (EShapeType eShpaeType: EShapeType.values()) {
 			JRadioButton radioButton = new JRadioButton(eShpaeType.getName());
 			ActionHandler actionHandler = new ActionHandler();
 			radioButton.addActionListener(actionHandler);
 			radioButton.setActionCommand(eShpaeType.toString());
+			
+			buttonGroup.add(radioButton);
 			this.add(radioButton);			
 		}
 	}
@@ -29,7 +68,7 @@ public class GShapeToolBar extends JToolBar {
 	}
 
 	public void associate(GDrawingPanel drawingPanel) {
-		this.drawingPanel = drawingPanel;		
+		this.drawingPanel = drawingPanel;	
 	}
 	
 	private class ActionHandler implements ActionListener {
@@ -38,7 +77,6 @@ public class GShapeToolBar extends JToolBar {
 			String sShapeType = e.getActionCommand();
 			EShapeType eShapeType = EShapeType.valueOf(sShapeType);
 			drawingPanel.setEShapeType(eShapeType);
-		}
-		
+		}		
 	}
 }

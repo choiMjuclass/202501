@@ -5,11 +5,11 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import frames.GShapeToolBar.EShapeType;
 import shapes.GRectangle;
 import shapes.GShape;
 import transformers.GTransformer;
@@ -22,47 +22,24 @@ public class GDrawingPanel extends JPanel {
 		eNP
 	}
 	
-	public enum EShapeType {
-		eRectnalge("rectangle", EDrawingType.e2P, GRectangle.class),
-		eEllipse("ellipse", EDrawingType.e2P, GRectangle.class),
-		eLine("line", EDrawingType.e2P, GRectangle.class),
-		ePolygon("polygon", EDrawingType.eNP, GRectangle.class);
-		
-		private String name;
-		private EDrawingType eDrawingType;
-		private Class<?> classShape;
-		private EShapeType(String name, EDrawingType eDrawingType, Class<?> classShape) {
-			this.name = name;
-			this.eDrawingType = eDrawingType;
-			this.classShape = classShape;
-		}
-		public String getName() {
-			return this.name;
-		}
-		public EDrawingType getEDrawingType() {
-			return this.eDrawingType;
-		}
-		public GShape getClassShape() {
-			try {
-				GShape shape = (GShape) classShape.getConstructor().newInstance();
-				return shape;
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+	public enum EDrawingState {
+		eIdle,
+		e2P,
+		eNP
 	}
 
-	private Vector<GRectangle> rectangles;
+	private Vector<GShape> shapes;
 	private EShapeType eShapeType;
+	private EDrawingState eDrawingState;
 	
 	public GDrawingPanel() {
 		MouseHandler mouseHandler = new MouseHandler();
 		this.addMouseListener(mouseHandler);
 		this.addMouseMotionListener(mouseHandler);
 		
-		this.rectangles = new Vector<GRectangle>();
+		this.shapes = new Vector<GShape>();
+		this.eShapeType = null;
+		this.eDrawingState = EDrawingState.eIdle;
 	}
 
 	public void initialize() {
@@ -73,11 +50,23 @@ public class GDrawingPanel extends JPanel {
 	
 	protected void paintComponent(Graphics graphics) {
 		super.paintComponent(graphics);
-		for (GRectangle rectangle: rectangles) {
-			rectangle.draw((Graphics2D)graphics);
+		for (GShape shape: this.shapes) {
+			shape.draw((Graphics2D)graphics);
 		}
-	}	
+	}
 	
+	private void startDrawing(int x, int y) {
+		// set shape
+		GShape shape = eShapeType.newShape();
+		GTransformer transformer = new GDrawer(shape);
+		transformer.start(e.getX(), e.getY(), getGraphics());
+	}
+	private void keepDrawing(int x, int y) {		
+	}
+	private void addPoint(int x, int y) {		
+	}
+	private void finishDrawing(int x, int y) {		
+	}
 
 	private class MouseHandler implements MouseListener, MouseMotionListener {
 
@@ -90,24 +79,27 @@ public class GDrawingPanel extends JPanel {
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			transformer = new GTransformer();
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			transformer.start(graphics2D, e.getX(), e.getY());			
+			if (eDrawingState == EDrawingState.eIdle) {
+				// set transformer
+				if (eShapeType == EShapeType.eSelect) {					
+				} else {
+					startDrawing(e.getX(), e.getY());
+					eDrawingState = EDrawingState.e2P;
+				}				
+			}
 		}
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			transformer.drag(graphics2D, e.getX(), e.getY());			
-
+			if (eDrawingState == EDrawingState.e2P) {
+				keepDrawing(e.getX(), e.getY());
+			}
 		}
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			Graphics2D graphics2D = (Graphics2D)getGraphics();
-			graphics2D.setXORMode(getBackground());
-			GRectangle rectangle = transformer.finish(graphics2D, e.getX(), e.getY());			
-			rectangles.add(rectangle);
+			if (eDrawingState == EDrawingState.e2P) {
+				finishDrawing(e.getX(), e.getY());
+				eDrawingState = EDrawingState.eIdle;
+			}
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
