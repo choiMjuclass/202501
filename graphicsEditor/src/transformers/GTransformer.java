@@ -1,23 +1,17 @@
 package transformers;
 
 import java.awt.Graphics2D;
+import shapes.GShape;
 
-import shapes.GRectangle;
+public abstract class GTransformer {
 
-public class GTransformer {
-
-	private GRectangle rectangle;
-	public void start(Graphics2D graphics, int x, int y) {
-		rectangle = new GRectangle();
-		rectangle.setPoint(x, y);
-		rectangle.dragPoint(x, y);
+	protected GShape shape;
+	
+	public GTransformer(GShape shape) {
+		this.shape = shape;
 	}
-	public void drag(Graphics2D graphics, int x, int y) {
-		rectangle.draw(graphics);
-		rectangle.dragPoint(x, y);
-		rectangle.draw(graphics);		
-	}
-	public GRectangle finish(Graphics2D graphics, int x, int y) {
-		return rectangle;
-	}
+	
+	public abstract void start(Graphics2D graphics, int x, int y);
+	public abstract void drag(Graphics2D graphics, int x, int y);
+	public abstract void finish(Graphics2D graphics, int x, int y);
 }

@@ -3,21 +3,23 @@ package transformers;
 import java.awt.Graphics2D;
 
 import shapes.GRectangle;
+import shapes.GShape;
 
-public class GDrawer {
+public class GDrawer extends GTransformer {
 
 	private GRectangle rectangle;
+	
+	public GDrawer(GShape shape) {
+		super(shape);
+		this.rectangle = (GRectangle) shape;
+	}
 	public void start(Graphics2D graphics, int x, int y) {
-		rectangle = new GRectangle();
 		rectangle.setPoint(x, y);
 		rectangle.dragPoint(x, y);
 	}
 	public void drag(Graphics2D graphics, int x, int y) {
-		rectangle.draw(graphics);
 		rectangle.dragPoint(x, y);
-		rectangle.draw(graphics);		
 	}
-	public GRectangle finish(Graphics2D graphics, int x, int y) {
-		return rectangle;
+	public void finish(Graphics2D graphics, int x, int y) {
 	}
 }

@@ -9,9 +9,9 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import frames.GShapeToolBar.EShapeType;
-import shapes.GRectangle;
+import frames.GShapeToolBar.EShapeTool;
 import shapes.GShape;
+import transformers.GDrawer;
 import transformers.GTransformer;
 
 public class GDrawingPanel extends JPanel {
@@ -29,7 +29,9 @@ public class GDrawingPanel extends JPanel {
 	}
 
 	private Vector<GShape> shapes;
-	private EShapeType eShapeType;
+	private GTransformer transformer;
+	private GShape currentShape;	
+	private EShapeTool eShapeTool;
 	private EDrawingState eDrawingState;
 	
 	public GDrawingPanel() {
@@ -38,14 +40,14 @@ public class GDrawingPanel extends JPanel {
 		this.addMouseMotionListener(mouseHandler);
 		
 		this.shapes = new Vector<GShape>();
-		this.eShapeType = null;
+		this.eShapeTool = null;
 		this.eDrawingState = EDrawingState.eIdle;
 	}
 
 	public void initialize() {
 	}	
-	public void setEShapeType(EShapeType eShapeType) {
-		this.eShapeType = eShapeType;
+	public void setEShapeTool(EShapeTool eShapeTool) {
+		this.eShapeTool = eShapeTool;
 	}
 	
 	protected void paintComponent(Graphics graphics) {
@@ -57,32 +59,32 @@ public class GDrawingPanel extends JPanel {
 	
 	private void startDrawing(int x, int y) {
 		// set shape
-		GShape shape = eShapeType.newShape();
-		GTransformer transformer = new GDrawer(shape);
-		transformer.start(e.getX(), e.getY(), getGraphics());
+		this.currentShape = eShapeTool.newShape();
+		this.shapes.add(this.currentShape);
+		this.transformer = new GDrawer(this.currentShape);
+		this.transformer.start((Graphics2D) getGraphics(), x, y);
 	}
 	private void keepDrawing(int x, int y) {		
+		this.transformer.drag((Graphics2D) getGraphics(), x, y);
+		this.repaint();
 	}
 	private void addPoint(int x, int y) {		
 	}
 	private void finishDrawing(int x, int y) {		
+		this.transformer.finish((Graphics2D) getGraphics(), x, y);
 	}
 
 	private class MouseHandler implements MouseListener, MouseMotionListener {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			System.out.println("mouseClicked");
 		}
-
-		private GTransformer transformer;
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
 				// set transformer
-				if (eShapeType == EShapeType.eSelect) {					
-				} else {
+				if (eShapeTool.getEDrawingType() == EDrawingType.e2P) {					
 					startDrawing(e.getX(), e.getY());
 					eDrawingState = EDrawingState.e2P;
 				}				
@@ -103,16 +105,13 @@ public class GDrawingPanel extends JPanel {
 		}
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			System.out.println("mouseMoved");
 		}		
 		
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			System.out.println("mouseEntered");
 		}
 		@Override
 		public void mouseExited(MouseEvent e) {
-			System.out.println("mouseExited");
 		}
 	}
 }

@@ -15,7 +15,7 @@ import shapes.GShape;
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 
-	public enum EShapeType {
+	public enum EShapeTool {
 		eSelect("select", EDrawingType.e2P, GRectangle.class),
 		eRectnalge("rectangle", EDrawingType.e2P, GRectangle.class),
 		eEllipse("ellipse", EDrawingType.e2P, GRectangle.class),
@@ -25,7 +25,7 @@ public class GShapeToolBar extends JToolBar {
 		private String name;
 		private EDrawingType eDrawingType;
 		private Class<?> classShape;
-		private EShapeType(String name, EDrawingType eDrawingType, Class<?> classShape) {
+		private EShapeTool(String name, EDrawingType eDrawingType, Class<?> classShape) {
 			this.name = name;
 			this.eDrawingType = eDrawingType;
 			this.classShape = classShape;
@@ -53,7 +53,7 @@ public class GShapeToolBar extends JToolBar {
 	
 	public GShapeToolBar() {
 		ButtonGroup buttonGroup = new ButtonGroup();
-		for (EShapeType eShpaeType: EShapeType.values()) {
+		for (EShapeTool eShpaeType: EShapeTool.values()) {
 			JRadioButton radioButton = new JRadioButton(eShpaeType.getName());
 			ActionHandler actionHandler = new ActionHandler();
 			radioButton.addActionListener(actionHandler);
@@ -75,8 +75,8 @@ public class GShapeToolBar extends JToolBar {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String sShapeType = e.getActionCommand();
-			EShapeType eShapeType = EShapeType.valueOf(sShapeType);
-			drawingPanel.setEShapeType(eShapeType);
+			EShapeTool eShapeType = EShapeTool.valueOf(sShapeType);
+			drawingPanel.setEShapeTool(eShapeType);
 		}		
 	}
 }
