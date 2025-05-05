@@ -8,33 +8,34 @@ import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 import javax.swing.JToolBar;
 
-import frames.GDrawingPanel.EDrawingType;
+import shapes.GPolygon;
 import shapes.GRectangle;
 import shapes.GShape;
+import shapes.GShape.EPoints;
 
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 
 	public enum EShapeTool {
-		eSelect("select", EDrawingType.e2P, GRectangle.class),
-		eRectnalge("rectangle", EDrawingType.e2P, GRectangle.class),
-		eEllipse("ellipse", EDrawingType.e2P, GRectangle.class),
-		eLine("line", EDrawingType.e2P, GRectangle.class),
-		ePolygon("polygon", EDrawingType.eNP, GRectangle.class);
+		eSelect("select", EPoints.e2P, GRectangle.class),
+		eRectnalge("rectangle", EPoints.e2P, GRectangle.class),
+		eEllipse("ellipse", EPoints.e2P, GRectangle.class),
+		eLine("line", EPoints.e2P, GRectangle.class),
+		ePolygon("polygon", EPoints.eNP, GPolygon.class);
 		
 		private String name;
-		private EDrawingType eDrawingType;
+		private EPoints ePoints;
 		private Class<?> classShape;
-		private EShapeTool(String name, EDrawingType eDrawingType, Class<?> classShape) {
+		private EShapeTool(String name, EPoints ePoints, Class<?> classShape) {
 			this.name = name;
-			this.eDrawingType = eDrawingType;
+			this.ePoints = ePoints;
 			this.classShape = classShape;
 		}
 		public String getName() {
 			return this.name;
 		}
-		public EDrawingType getEDrawingType() {
-			return this.eDrawingType;
+		public EPoints getEPoints() {
+			return this.ePoints;
 		}
 		public GShape newShape() {
 			try {
@@ -65,6 +66,8 @@ public class GShapeToolBar extends JToolBar {
 	}
 
 	public void initialize() {
+		JRadioButton button = (JRadioButton) this.getComponent(EShapeTool.eSelect.ordinal());
+		button.doClick();
 	}
 
 	public void associate(GDrawingPanel drawingPanel) {
