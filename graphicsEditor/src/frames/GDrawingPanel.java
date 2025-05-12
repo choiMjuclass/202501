@@ -1,5 +1,6 @@
 package frames;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
@@ -11,6 +12,7 @@ import javax.swing.JPanel;
 
 import frames.GShapeToolBar.EShapeTool;
 import shapes.GShape;
+import shapes.GShape.EAnchor;
 import shapes.GShape.EPoints;
 import transformers.GDrawer;
 import transformers.GMover;
@@ -91,10 +93,30 @@ public class GDrawingPanel extends JPanel {
 	}
 	private void finishTransform(int x, int y) {		
 		this.transformer.finish((Graphics2D) getGraphics(), x, y);
+		this.selectShape(this.currentShape);
+		
 		if (this.eShapeTool == EShapeTool.eSelect) {
 			this.shapes.remove(this.shapes.size()-1);
 		}
 		this.repaint();
+	}
+	
+	private void selectShape(GShape shape) {
+		for (GShape otherShape: this.shapes) {
+			otherShape.setSelected(false);
+		}
+		this.currentShape.setSelected(true);		
+	}
+	
+	private void changeCursor(int x, int y) {
+		this.selectedShape = onShape(x, y);
+		if (this.selectedShape == null) {
+			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		} else {
+			EAnchor eAnchor = this.selectedShape.getESelectedAnchor();
+			this.setCursor(eAnchor.getCursor());
+		}
+		
 	}
 
 	private class MouseHandler implements MouseListener, MouseMotionListener {
@@ -131,6 +153,8 @@ public class GDrawingPanel extends JPanel {
 				keepTransform(e.getX(), e.getY());
 			} else if (eDrawingState == EDrawingState.eNP) {
 				keepTransform(e.getX(), e.getY());
+			} else if (eDrawingState == EDrawingState.eIdle) {
+				changeCursor(e.getX(), e.getY());
 			}
 		}
 		private void mouse2Clicked(MouseEvent e) {

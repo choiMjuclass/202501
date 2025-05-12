@@ -21,26 +21,4 @@ public class GPolygon extends GShape {
 	public void addPoint(int x, int y) {
 		this.polygon.addPoint(x, y);
 	}
-	
-	private int px, py;
-	@Override
-	public void setMovePoint(int x, int y) {
-		// TODO Auto-generated method stub
-		this.px = x;
-		this.py = y;
-	}
-	@Override
-	public void movePoint(int x, int y) {
-		// TODO Auto-generated method stub
-		int dx = x - px;
-		int dy = y - py;
-		
-		for (int i=0; i<this.polygon.npoints; i++) {
-			this.polygon.xpoints[i] += dx;
-			this.polygon.ypoints[i] += dy;
-		}
-		
-		this.px = x;
-		this.py = y;		
-	}
 }
