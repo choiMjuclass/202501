@@ -45,6 +45,9 @@ public abstract class GShape {
 	private EAnchor eSelectedAnchor;
 	private int px, py;
 	
+	public AffineTransform getAffineTransform() {
+		return this.affineTransform;
+	}
 	public GShape(Shape shape) {
 		this.shape = shape;
 		this.affineTransform = new AffineTransform();
@@ -69,6 +72,10 @@ public abstract class GShape {
 	public EAnchor getESelectedAnchor() {
 		return this.eSelectedAnchor;
 	}
+	public Rectangle getBounds() {
+		return this.shape.getBounds();
+	}
+
 
 	// methods
 	private void setAnchors() {
@@ -102,24 +109,27 @@ public abstract class GShape {
 		if (bSelected) {
 			this.setAnchors();
 			for (int i=0; i<this.anchors.length; i++) {
+				Shape transformedAnchor = this.affineTransform.createTransformedShape(anchors[i]);
 				Color penColor = graphics2D.getColor();
 				graphics2D.setColor(graphics2D.getBackground());
-				graphics2D.fill(anchors[i]);
+				graphics2D.fill(transformedAnchor);
 				graphics2D.setColor(penColor);
-				graphics2D.draw(anchors[i]);
+				graphics2D.draw(transformedAnchor);
 			}
 		}
 	}
 	public boolean contains(int x, int y) {
 		if (bSelected) {
 			for (int i=0; i<this.anchors.length; i++) {
-				if (anchors[i].contains(x, y)) {
+				Shape transformedAnchor = this.affineTransform.createTransformedShape(anchors[i]);
+				if (transformedAnchor.contains(x, y)) {
 					this.eSelectedAnchor = EAnchor.values()[i];
 					return true;
 				}
 			}
 		}
-		if (this.shape.contains(x, y)) {
+		Shape transformedShape = this.affineTransform.createTransformedShape(shape);
+		if (transformedShape.contains(x, y)) {
 			this.eSelectedAnchor = EAnchor.eMM;
 			return true;
 		}
@@ -130,7 +140,4 @@ public abstract class GShape {
 	public abstract void addPoint(int x, int y);
 	public abstract void dragPoint(int x, int y);
 
-	public void translate(int tx, int ty) {
-		this.affineTransform.translate(tx, ty);
-	}
 }
