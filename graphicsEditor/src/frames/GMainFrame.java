@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import global.GConstants;
+
 public class GMainFrame extends JFrame {
 	// attributes
 	private static final long serialVersionUID = 1L;
@@ -16,8 +18,8 @@ public class GMainFrame extends JFrame {
 	
 	public GMainFrame() {
 		// attributes
-		this.setLocation(100, 200);
-		this.setSize(600, 400);
+		this.setLocation(GConstants.GMainFrame.X, GConstants.GMainFrame.Y);
+		this.setSize(GConstants.GMainFrame.W, GConstants.GMainFrame.H);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		// components

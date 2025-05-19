@@ -10,12 +10,13 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
-import frames.GShapeToolBar.EShapeTool;
+import global.GConstants.EAnchor;
+import global.GConstants.EShapeTool;
 import shapes.GShape;
-import shapes.GShape.EAnchor;
 import shapes.GShape.EPoints;
 import transformers.GDrawer;
 import transformers.GMover;
+import transformers.GResizer;
 import transformers.GTransformer;
 
 public class GDrawingPanel extends JPanel {
@@ -76,8 +77,12 @@ public class GDrawingPanel extends JPanel {
 			this.selectedShape = onShape(x, y);
 			if (this.selectedShape == null) {
 				this.transformer = new GDrawer(this.currentShape);
-			} else {
+			} else if (this.selectedShape.getESelectedAnchor() == EAnchor.eMM){
 				this.transformer = new GMover(this.selectedShape);
+			} else if (this.selectedShape.getESelectedAnchor() == EAnchor.eRR){
+				this.transformer = new GMover(this.selectedShape);
+			} else {
+				this.transformer = new GResizer(this.selectedShape);
 			}
 		} else {
 			this.transformer = new GDrawer(this.currentShape);
@@ -97,6 +102,13 @@ public class GDrawingPanel extends JPanel {
 		
 		if (this.eShapeTool == EShapeTool.eSelect) {
 			this.shapes.remove(this.shapes.size()-1);
+			for (GShape shape: this.shapes) {
+				if (this.currentShape.contains(shape)) {
+					shape.setSelected(true);
+				} else {
+					shape.setSelected(false);				
+				}
+			}
 		}
 		this.repaint();
 	}
@@ -109,12 +121,14 @@ public class GDrawingPanel extends JPanel {
 	}
 	
 	private void changeCursor(int x, int y) {
-		this.selectedShape = onShape(x, y);
-		if (this.selectedShape == null) {
-			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		} else {
-			EAnchor eAnchor = this.selectedShape.getESelectedAnchor();
-			this.setCursor(eAnchor.getCursor());
+		if (this.eShapeTool == EShapeTool.eSelect) {
+			this.selectedShape = onShape(x, y);
+			if (this.selectedShape == null) {
+				this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			} else {
+				EAnchor eAnchor = this.selectedShape.getESelectedAnchor();
+				this.setCursor(eAnchor.getCursor());
+			}
 		}
 		
 	}

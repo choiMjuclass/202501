@@ -1,12 +1,13 @@
 package shapes;
 
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+
+import global.GConstants.EAnchor;
 
 public abstract class GShape {
 	private final static int ANCHOR_W = 10;
@@ -15,26 +16,6 @@ public abstract class GShape {
 	public enum EPoints {
 		e2P,
 		eNP
-	}
-	
-	public enum EAnchor {
-		eNN(new Cursor(Cursor.N_RESIZE_CURSOR)),
-		eNE(new Cursor(Cursor.NE_RESIZE_CURSOR)),
-		eNW(new Cursor(Cursor.NW_RESIZE_CURSOR)),
-		eSS(new Cursor(Cursor.S_RESIZE_CURSOR)),
-		eSE(new Cursor(Cursor.SE_RESIZE_CURSOR)),
-		eSW(new Cursor(Cursor.SW_RESIZE_CURSOR)),
-		eEE(new Cursor(Cursor.E_RESIZE_CURSOR)),
-		eWW(new Cursor(Cursor.W_RESIZE_CURSOR)),
-		eRR(new Cursor(Cursor.HAND_CURSOR)),
-		eMM(new Cursor(Cursor.MOVE_CURSOR));		
-		private Cursor cursor;
-		private EAnchor(Cursor cursor) {
-			this.cursor = cursor;
-		}
-		public Cursor getCursor() {
-			return this.cursor;
-		}
 	}
 	
 	private Shape shape;
@@ -63,6 +44,10 @@ public abstract class GShape {
 	protected Shape getShape() {
 		return this.shape;
 	}
+	public Shape getTransformedShape() {
+		return this.affineTransform.createTransformedShape(this.shape);
+	}
+
 	public boolean isSelected() {
 		return this.bSelected;
 	}
@@ -135,6 +120,10 @@ public abstract class GShape {
 		}
 		return false;
 	}
+	public boolean contains(GShape shape) {
+		return this.shape.contains(shape.getShape().getBounds());
+	}
+
 
 	public abstract void setPoint(int x, int y);
 	public abstract void addPoint(int x, int y);
