@@ -133,7 +133,7 @@ public class GDrawingPanel extends JPanel {
 		private void mouse1Clicked(MouseEvent e) {
 			if (eDrawingState == EDrawingState.eIdle) {
 				// set transformer
-				if (eShapeTool.getEPoints() == EPoints.e2P) {				
+				if (eShapeTool.getEPoints() == EPoints.e2P) {
 					startTransform(e.getX(), e.getY());
 					eDrawingState = EDrawingState.e2P;
 				} else if (eShapeTool.getEPoints() == EPoints.eNP) {
