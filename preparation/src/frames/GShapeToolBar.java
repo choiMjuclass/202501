@@ -12,7 +12,6 @@ import global.GConstants.EShapeTool;
 public class GShapeToolBar extends JToolBar {
 	private static final long serialVersionUID = 1L;
 
-
 	// associations
 	private GDrawingPanel drawingPanel;
 	

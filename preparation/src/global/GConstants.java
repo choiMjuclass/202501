@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import shapes.GPolygon;
 import shapes.GRectangle;
+import shapes.GSelect;
 import shapes.GShape;
 import shapes.GShape.EPoints;
 
@@ -38,7 +39,7 @@ public class GConstants {
 	}
 	
 	public enum EShapeTool {
-		eSelect("select", EPoints.e2P, GRectangle.class),
+		eSelect("select", EPoints.e2P, GSelect.class),
 		eRectnalge("rectangle", EPoints.e2P, GRectangle.class),
 		eEllipse("ellipse", EPoints.e2P, GRectangle.class),
 		eLine("line", EPoints.e2P, GRectangle.class),

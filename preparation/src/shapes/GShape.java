@@ -10,6 +10,7 @@ import java.awt.geom.Ellipse2D;
 import global.GConstants.EAnchor;
 
 public abstract class GShape {
+	
 	private final static int ANCHOR_W = 10;
 	private final static int ANCHOR_H = 10;
 	
@@ -25,9 +26,7 @@ public abstract class GShape {
 	private boolean bSelected;
 	private EAnchor eSelectedAnchor;
 	
-	public AffineTransform getAffineTransform() {
-		return this.affineTransform;
-	}
+	// constructors
 	public GShape(Shape shape) {
 		this.shape = shape;
 		this.affineTransform = new AffineTransform();
@@ -39,10 +38,14 @@ public abstract class GShape {
 		this.bSelected = false;
 		this.eSelectedAnchor = null;
 	}
+	
 	// getters and setters
 	protected Shape getShape() {
 		return this.shape;
 	}
+	public AffineTransform getAffineTransform() {
+		return this.affineTransform;
+	}	
 	public Shape getTransformedShape() {
 		return this.affineTransform.createTransformedShape(this.shape);
 	}
@@ -60,10 +63,9 @@ public abstract class GShape {
 		return this.shape.getBounds();
 	}
 
-
 	// methods
-	private void setAnchors() {
-		Rectangle bounds = this.shape.getBounds();
+	private void setAnchors(Shape transformedShape) {
+		Rectangle bounds = transformedShape.getBounds();
 		int bx = bounds.x;
 		int by = bounds.y;
 		int bw = bounds.width;
@@ -88,31 +90,30 @@ public abstract class GShape {
 		}
 	}
 	public void draw(Graphics2D graphics2D) {
-		Shape transformedShape = this.affineTransform.createTransformedShape(shape);
+		Shape transformedShape = this.getTransformedShape();
 		graphics2D.draw(transformedShape);
 		if (bSelected) {
-			this.setAnchors();
+			this.setAnchors(transformedShape);
 			for (int i=0; i<this.anchors.length; i++) {
-				Shape transformedAnchor = this.affineTransform.createTransformedShape(this.anchors[i]);
 				Color penColor = graphics2D.getColor();
 				graphics2D.setColor(graphics2D.getBackground());
-				graphics2D.fill(transformedAnchor);
+				graphics2D.fill(this.anchors[i]);
 				graphics2D.setColor(penColor);
-				graphics2D.draw(transformedAnchor);
+				graphics2D.draw(this.anchors[i]);
 			}
 		}
 	}
 	public boolean contains(int x, int y) {
+		Shape transformedShape = this.getTransformedShape();
 		if (bSelected) {
+			this.setAnchors(transformedShape);
 			for (int i=0; i<this.anchors.length; i++) {
-				Shape transformedAnchor = this.affineTransform.createTransformedShape(anchors[i]);
-				if (transformedAnchor.contains(x, y)) {
+				if (this.anchors[i].contains(x, y)) {
 					this.eSelectedAnchor = EAnchor.values()[i];
 					return true;
 				}
 			}
 		}
-		Shape transformedShape = this.affineTransform.createTransformedShape(shape);
 		if (transformedShape.contains(x, y)) {
 			this.eSelectedAnchor = EAnchor.eMM;
 			return true;
@@ -120,12 +121,10 @@ public abstract class GShape {
 		return false;
 	}
 	public boolean contains(GShape shape) {
-		return this.shape.contains(shape.getShape().getBounds());
+		return this.shape.contains(shape.getBounds());
 	}
-
 
 	public abstract void setPoint(int x, int y);
 	public abstract void addPoint(int x, int y);
 	public abstract void dragPoint(int x, int y);
-
 }

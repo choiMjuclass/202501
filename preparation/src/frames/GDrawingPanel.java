@@ -69,6 +69,12 @@ public class GDrawingPanel extends JPanel {
 		}
 		return null;
 	}
+	private void selectShape(GShape shape) {
+		for (GShape otherShape: this.shapes) {
+			otherShape.setSelected(false);
+		}
+		this.currentShape.setSelected(true);		
+	}
 	
 	private void startTransform(int x, int y) {
 		// set shape
@@ -76,18 +82,19 @@ public class GDrawingPanel extends JPanel {
 		this.shapes.add(this.currentShape);
 		if (this.eShapeTool == EShapeTool.eSelect) {
 			this.selectedShape = onShape(x, y);
-			if (this.selectedShape == null) {
-				this.transformer = new GDrawer(this.currentShape);
-			} else if (this.selectedShape.getESelectedAnchor() == EAnchor.eMM){
-				this.transformer = new GMover(this.selectedShape);
-			} else if (this.selectedShape.getESelectedAnchor() == EAnchor.eRR){
-				this.transformer = new GMover(this.selectedShape);
-			} else {
-				this.transformer = new GResizer(this.selectedShape);
+			if (this.selectedShape != null) {
+				if (this.selectedShape.getESelectedAnchor() == EAnchor.eMM){
+					this.transformer = new GMover(this.selectedShape);
+				} else if (this.selectedShape.getESelectedAnchor() == EAnchor.eRR){
+					this.transformer = new GMover(this.selectedShape);
+				} else {
+					this.transformer = new GResizer(this.selectedShape);
+				}
 			}
 		} else {
 			this.transformer = new GDrawer(this.currentShape);
 		}
+		
 		this.transformer.start((Graphics2D) getGraphics(), x, y);
 	}
 	private void keepTransform(int x, int y) {		
@@ -98,8 +105,8 @@ public class GDrawingPanel extends JPanel {
 		this.transformer.addPoint((Graphics2D) getGraphics(), x, y);
 	}
 	private void finishTransform(int x, int y) {
-		this.selectShape(this.currentShape);
 		this.transformer.finish((Graphics2D) getGraphics(), x, y);
+		this.selectShape(this.currentShape);
 		
 		if (this.eShapeTool == EShapeTool.eSelect) {
 			this.shapes.remove(this.shapes.size()-1);
@@ -112,13 +119,6 @@ public class GDrawingPanel extends JPanel {
 			}
 		}
 		this.repaint();
-	}
-	
-	private void selectShape(GShape shape) {
-		for (GShape otherShape: this.shapes) {
-			otherShape.setSelected(false);
-		}
-		this.currentShape.setSelected(true);		
 	}
 	
 	private void changeCursor(int x, int y) {
