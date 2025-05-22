@@ -63,8 +63,7 @@ public abstract class GShape {
 
 	// methods
 	private void setAnchors() {
-		Shape transformedShape = this.affineTransform.createTransformedShape(this.shape);
-		Rectangle bounds = transformedShape.getBounds();
+		Rectangle bounds = this.shape.getBounds();
 		int bx = bounds.x;
 		int by = bounds.y;
 		int bw = bounds.width;
@@ -94,11 +93,12 @@ public abstract class GShape {
 		if (bSelected) {
 			this.setAnchors();
 			for (int i=0; i<this.anchors.length; i++) {
+				Shape transformedAnchor = this.affineTransform.createTransformedShape(this.anchors[i]);
 				Color penColor = graphics2D.getColor();
 				graphics2D.setColor(graphics2D.getBackground());
-				graphics2D.fill(this.anchors[i]);
+				graphics2D.fill(transformedAnchor);
 				graphics2D.setColor(penColor);
-				graphics2D.draw(this.anchors[i]);
+				graphics2D.draw(transformedAnchor);
 			}
 		}
 	}

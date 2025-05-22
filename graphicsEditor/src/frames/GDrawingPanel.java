@@ -48,7 +48,8 @@ public class GDrawingPanel extends JPanel {
 	}
 
 	public void initialize() {
-	}	
+	}
+	
 	public void setEShapeTool(EShapeTool eShapeTool) {
 		this.eShapeTool = eShapeTool;
 	}
@@ -98,6 +99,7 @@ public class GDrawingPanel extends JPanel {
 	}
 	private void finishTransform(int x, int y) {
 		this.selectShape(this.currentShape);
+		this.transformer.finish((Graphics2D) getGraphics(), x, y);
 		
 		if (this.eShapeTool == EShapeTool.eSelect) {
 			this.shapes.remove(this.shapes.size()-1);
@@ -109,7 +111,6 @@ public class GDrawingPanel extends JPanel {
 				}
 			}
 		}
-		this.transformer.finish((Graphics2D) getGraphics(), x, y);
 		this.repaint();
 	}
 	
@@ -129,8 +130,7 @@ public class GDrawingPanel extends JPanel {
 				EAnchor eAnchor = this.selectedShape.getESelectedAnchor();
 				this.setCursor(eAnchor.getCursor());
 			}
-		}
-		
+		}		
 	}
 
 	private class MouseHandler implements MouseListener, MouseMotionListener {
