@@ -90,13 +90,16 @@ public class GDrawingPanel extends JPanel {
 		}
 		this.transformer.start((Graphics2D) getGraphics(), x, y);
 	}
+	
 	private void keepTransform(int x, int y) {		
 		this.transformer.drag((Graphics2D) getGraphics(), x, y);
 		this.repaint();
 	}
+	
 	private void addPoint(int x, int y) {		
 		this.transformer.addPoint((Graphics2D) getGraphics(), x, y);
 	}
+	
 	private void finishTransform(int x, int y) {
 		this.selectShape(this.currentShape);
 		this.transformer.finish((Graphics2D) getGraphics(), x, y);
