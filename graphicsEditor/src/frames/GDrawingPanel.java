@@ -96,8 +96,7 @@ public class GDrawingPanel extends JPanel {
 	private void addPoint(int x, int y) {		
 		this.transformer.addPoint((Graphics2D) getGraphics(), x, y);
 	}
-	private void finishTransform(int x, int y) {		
-		this.transformer.finish((Graphics2D) getGraphics(), x, y);
+	private void finishTransform(int x, int y) {
 		this.selectShape(this.currentShape);
 		
 		if (this.eShapeTool == EShapeTool.eSelect) {
@@ -110,6 +109,7 @@ public class GDrawingPanel extends JPanel {
 				}
 			}
 		}
+		this.transformer.finish((Graphics2D) getGraphics(), x, y);
 		this.repaint();
 	}
 	

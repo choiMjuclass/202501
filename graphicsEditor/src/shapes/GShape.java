@@ -24,7 +24,6 @@ public abstract class GShape {
 	private Ellipse2D anchors[];
 	private boolean bSelected;
 	private EAnchor eSelectedAnchor;
-	private int px, py;
 	
 	public AffineTransform getAffineTransform() {
 		return this.affineTransform;
