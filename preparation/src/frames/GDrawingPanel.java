@@ -90,6 +90,8 @@ public class GDrawingPanel extends JPanel {
 				} else {
 					this.transformer = new GResizer(this.selectedShape);
 				}
+			} else {
+				this.transformer = new GDrawer(this.currentShape);				
 			}
 		} else {
 			this.transformer = new GDrawer(this.currentShape);
