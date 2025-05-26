@@ -13,12 +13,15 @@ public class GDrawer extends GTransformer {
 		super(shape);
 		this.shape = shape;
 	}
+	@Override
 	public void start(Graphics2D graphics, int x, int y) {
 		shape.setPoint(x, y);
 	}
+	@Override
 	public void drag(Graphics2D graphics, int x, int y) {
 		shape.dragPoint(x, y);
 	}
+	@Override
 	public void finish(Graphics2D graphics, int x, int y) {
 	}
 	@Override

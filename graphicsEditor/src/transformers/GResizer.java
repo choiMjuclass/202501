@@ -20,6 +20,7 @@ public class GResizer extends GTransformer {
 		this.shape = shape;
 		this.eReiszeAnchor = null;
 	}
+	@Override
 	public void start(Graphics2D graphics, int x, int y) {
 		this.px = x;
 		this.py = y;
@@ -40,6 +41,7 @@ public class GResizer extends GTransformer {
 		}
 		
 	}
+	@Override
 	public void drag(Graphics2D graphics, int x, int y) {
 		
 		double dx =0; double dy=0;
@@ -70,6 +72,7 @@ public class GResizer extends GTransformer {
 		px = x;
 		py = y;
 	}
+	@Override
 	public void finish(Graphics2D graphics, int x, int y) {
 	}
 	@Override

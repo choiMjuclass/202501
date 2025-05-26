@@ -8,9 +8,9 @@ import shapes.GRectangle;
 import shapes.GShape;
 import shapes.GShape.EPoints;
 
-public class GConstants {
+public final class GConstants {
 
-	public final class GMainFrame {
+	public final static class GMainFrame {
 		public final static int X = 100;
 		public final static int Y = 200;
 		public final static int W = 600;

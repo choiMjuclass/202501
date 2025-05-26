@@ -60,7 +60,6 @@ public abstract class GShape {
 		return this.shape.getBounds();
 	}
 
-
 	// methods
 	private void setAnchors() {
 		Rectangle bounds = this.shape.getBounds();
@@ -122,8 +121,7 @@ public abstract class GShape {
 	public boolean contains(GShape shape) {
 		return this.shape.contains(shape.getShape().getBounds());
 	}
-
-
+	
 	public abstract void setPoint(int x, int y);
 	public abstract void addPoint(int x, int y);
 	public abstract void dragPoint(int x, int y);
