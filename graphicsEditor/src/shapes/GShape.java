@@ -6,10 +6,13 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.io.Serializable;
 
 import global.GConstants.EAnchor;
 
-public abstract class GShape {
+public abstract class GShape implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private final static int ANCHOR_W = 10;
 	private final static int ANCHOR_H = 10;
 	

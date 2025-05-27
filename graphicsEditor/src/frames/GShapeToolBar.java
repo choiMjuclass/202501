@@ -15,7 +15,7 @@ public class GShapeToolBar extends JToolBar {
 
 	// associations
 	private GDrawingPanel drawingPanel;
-	
+
 	public GShapeToolBar() {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		for (EShapeTool eShpaeType: EShapeTool.values()) {

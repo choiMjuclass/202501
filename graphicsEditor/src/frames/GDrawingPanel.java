@@ -29,6 +29,7 @@ public class GDrawingPanel extends JPanel {
 	}
 
 	private Vector<GShape> shapes;
+	
 	private GTransformer transformer;
 	private GShape currentShape;
 	private GShape selectedShape;	
@@ -48,6 +49,13 @@ public class GDrawingPanel extends JPanel {
 	}
 
 	public void initialize() {
+	}
+	
+	public Vector<GShape> getShapes() {
+		return this.shapes;
+	}
+	public void setShapes(Vector<GShape> shapes) {
+		this.shapes = shapes;
 	}
 	
 	public void setEShapeTool(EShapeTool eShapeTool) {

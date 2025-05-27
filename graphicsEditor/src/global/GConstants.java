@@ -37,6 +37,28 @@ public final class GConstants {
 		}
 	}
 	
+	public enum EFileMenuItem {
+		eNew("새파일", "newPanel"),
+		eOpen("열기", "open"),
+		eSave("저장", "save"),
+		eSaveAs("다른이름으로", "saveAs"),
+		ePrint("프린트", "print"),
+		eQuit("종료", "quit");
+		
+		private String name;
+		private String methodName;
+		private EFileMenuItem(String name, String methodName) {
+			this.name = name;
+			this.methodName = methodName;
+		}
+		public String getName() {
+			return this.name;
+		}
+		public String getMethodName() {
+			return this.methodName;
+		}
+	}
+	
 	public enum EShapeTool {
 		eSelect("select", EPoints.e2P, GRectangle.class),
 		eRectnalge("rectangle", EPoints.e2P, GRectangle.class),

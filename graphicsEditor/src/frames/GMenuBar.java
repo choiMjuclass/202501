@@ -20,11 +20,10 @@ public class GMenuBar extends JMenuBar {
 		this.add(this.fileMenu);	
 	}
 
-	public void initialize() {
-	}
-
 	public void associate(GDrawingPanel drawingPanel) {
-		this.drawingPanel = drawingPanel;		
+		this.drawingPanel = drawingPanel;
 	}
-
+	public void initialize() {
+		this.fileMenu.associate(this.drawingPanel);
+	}
 }

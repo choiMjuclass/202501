@@ -41,6 +41,7 @@ public class GMainFrame extends JFrame {
 		// associated attributes
 		this.setVisible(true);
 
+		// initialize
 		this.menuBar.initialize();
 		this.toolBar.initialize();
 		this.drawingPanel.initialize();
