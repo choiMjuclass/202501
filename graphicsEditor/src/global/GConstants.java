@@ -43,6 +43,7 @@ public final class GConstants {
 		eSave("저장", "save"),
 		eSaveAs("다른이름으로", "saveAs"),
 		ePrint("프린트", "print"),
+		eClose("닫기", "close"),
 		eQuit("종료", "quit");
 		
 		private String name;
