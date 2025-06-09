@@ -1,20 +1,92 @@
 package global;
 
 import java.awt.Cursor;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import global.GConstants.EEditMenuItem;
+import global.GConstants.EFileMenuItem;
+import global.GConstants.EGraphicsMenuItem;
+import global.GConstants.EMainFrame;
+import global.GConstants.EMenu;
+import global.GConstants.EToolBarButton;
 import shapes.GPolygon;
 import shapes.GRectangle;
 import shapes.GShape;
 import shapes.GShape.EPoints;
 
 public final class GConstants {
+	
+	public GConstants() {
+	}
+	
+	public void readFromFile(String fileName) {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			// Load the input XML document, parse it and return an instance of the
+			// Document class.
+			File file = new File(fileName);
+			Document document = builder.parse(file);
+			NodeList nodeList = document.getDocumentElement().getChildNodes();
+			for (int i=0; i<nodeList.getLength(); i++) {
+				Node node = nodeList.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					if (node.getNodeName().equals(EMainFrame.class.getSimpleName())) {
+						EMainFrame.setValues(node);
+					} else if (node.getNodeName().equals(EMenu.class.getSimpleName())) {
+						EMenu.setValues(node);
+					} else if (node.getNodeName().equals(EFileMenuItem.class.getSimpleName())) {
+						EFileMenuItem.setValue(node);
+					} else if (node.getNodeName().equals(EEditMenuItem.class.getSimpleName())) {
+						EEditMenuItem.setValue(node);					
+					} else if (node.getNodeName().equals(EGraphicsMenuItem.class.getSimpleName())) {
+						EGraphicsMenuItem.setValue(node);					
+					} else if (node.getNodeName().equals(EToolBarButton.class.getSimpleName())) {
+						EToolBarButton.setValue(node);						
+					} 
+				}
+			}
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
 
-	public final static class GMainFrame {
-		public final static int X = 100;
-		public final static int Y = 200;
-		public final static int W = 600;
-		public final static int H = 400;
+	public enum EMainFrame {
+		eX(0),
+		eY(0),
+		eW(0),
+		eH(0);
+		
+		private int value;
+		private EMainFrame(int value) {
+			this.value = value;
+		}
+		public int getValue() {
+			return this.value;
+		}
+		public static void setValues(Node node) {
+			for (EMainFrame eMainFrame: EMainFrame.values()) {
+				Node attribute = node.getAttributes().getNamedItem(eMainFrame.name());
+				eMainFrame.value = Integer.parseInt(attribute.getNodeValue());				
+			}
+			
+		}
 	}
 	
 	public enum EAnchor {
